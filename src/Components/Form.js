@@ -40,7 +40,7 @@ function Form(props){
     <input type='radio' name='typegame' defaultChecked value={'Подкидной'} onChange={(e)=>props.setgame({...props.game, ...{type: e.target.value}})}></input>Подкидной
     <input type='radio' name='typegame' value={'Переводной'} onChange={(e)=>props.setgame({...props.game, ...{type: e.target.value}})}></input>Переводной<br></br>
     <button className={styles.submit} onClick={()=>
-    {props.setgame({...props.game, ...{start: !props.game.start}})}}>Начать игру!</button>
+    {props.checkgame()}}>Начать игру!</button>
     </div>
 }
 export default Form
