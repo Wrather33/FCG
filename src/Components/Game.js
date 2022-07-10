@@ -2,6 +2,10 @@ import { useState } from "react"
 import Form from './Form'
 import Board from './Board'
 import styles from './Main.module.css'
+import shortid from "shortid"
+import { firstNames} from "@faykah/first-names-en";
+console.log(firstNames);
+
 function Game(){
     const [game, setgame] = useState({
         start: false,
@@ -21,6 +25,10 @@ function Game(){
         choose: '',
         move: false
     })
+    const [bots, setbots] = useState([])
+    function givecards(player, count, setter, cards){
+
+    }
     function checkgame(){
         if(player.name){
             let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
@@ -30,6 +38,7 @@ function Game(){
             fetch(url).then( res => {
             return res.json()}).then(res=>{return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
               r=>{return r.json()}).then(r=>{
+
                 setgame({...game, ...{start: !game.start}})
               })})}
               
