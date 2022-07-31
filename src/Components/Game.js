@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Form from './Form'
 import Board from './Board'
 import styles from './Main.module.css'
@@ -24,7 +24,7 @@ function Game(){
         choose: '',
         move: false
     })
-    const [bots, setbots] = useState([])
+    const [bots, setbots] = useState([]);
     function givecards(player, count, setter, cards){
       let newdeck = Object.assign({}, player)
       for(let i=0; i<count; i++){
@@ -50,7 +50,7 @@ function Game(){
               }
     }
     const [robots, setrobots] = useState([])
-    return <div className={styles.Main}>{game.start ? <Board game={game} setgame={setgame} player={player} setplayer={setplayer}/> 
+    return <div className={styles.Main}>{game.start ? <Board game={game} setgame={setgame} player={player} setplayer={setplayer}/>
     : <Form game={game} setgame={setgame} player={player} setplayer={setplayer} checkgame={checkgame}/>}</div>
 }
 export default Game
