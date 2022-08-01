@@ -13,9 +13,8 @@ function Game(){
         type: 'Подкидной',
         cards: [],
         suit: '',
-        count: 2
-    })
-    const [player, setplayer] = useState({
+        count: 2,
+        player: {
         name: 'guest',
         wins: 0,
         draws: 0,
@@ -23,8 +22,9 @@ function Game(){
         cards: [],
         choose: '',
         move: false
+        },
+        bots: []
     })
-    const [bots, setbots] = useState([]);
     function givecards(player, count, setter, cards){
       let newdeck = Object.assign({}, player)
       for(let i=0; i<count; i++){
@@ -32,8 +32,13 @@ function Game(){
       }
       setter(player, newdeck)
     }
+    function changename(name){
+      let newname = Object.assign({}, game)
+      newname.player.name = name
+      setgame(newname)
+    }
     function checkgame(){
-        if(player.name){
+        if(game.player.name){
             let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
             if(game.jokers){
               url += `&jokers_enabled=true`
@@ -42,6 +47,8 @@ function Game(){
             return res.json()}).then(res=>{return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
               r=>{return r.json()}).then(r=>{
                 givecards(game, r.cards.length, setgame, r.cards)
+                givecards(game.player, 6, setgame, game.cards)
+                console.log(game)
                 setgame({...game, ...{start: !game.start}})
               })})}
               
@@ -49,8 +56,7 @@ function Game(){
                 alert('Имя не может быть пустым!')
               }
     }
-    const [robots, setrobots] = useState([])
-    return <div className={styles.Main}>{game.start ? <Board game={game} setgame={setgame} player={player} setplayer={setplayer}/>
-    : <Form game={game} setgame={setgame} player={player} setplayer={setplayer} checkgame={checkgame}/>}</div>
+    return <div className={styles.Main}>{game.start ? <Board game={game} setgame={setgame}/>
+    : <Form game={game} setgame={setgame} checkgame={checkgame} changename={changename}/>}</div>
 }
 export default Game
