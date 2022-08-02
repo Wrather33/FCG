@@ -37,6 +37,9 @@ function Game(){
       newname.player.name = name
       setgame(newname)
     }
+    function process(){
+      
+    }
     function checkgame(){
         if(game.player.name){
             let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1&jokers_enabled=${game.jokers}`
@@ -45,6 +48,7 @@ function Game(){
               r=>{return r.json()}).then(r=>{
                 givecards(game, r.cards.length, setgame, r.cards)
                 setgame({...game, ...{start: !game.start}})
+                process()
               })})}
               
               else{
