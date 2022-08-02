@@ -39,16 +39,11 @@ function Game(){
     }
     function checkgame(){
         if(game.player.name){
-            let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
-            if(game.jokers){
-              url += `&jokers_enabled=true`
-            }
+            let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1&jokers_enabled=${game.jokers}`
             fetch(url).then( res => {
             return res.json()}).then(res=>{return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
               r=>{return r.json()}).then(r=>{
                 givecards(game, r.cards.length, setgame, r.cards)
-                givecards(game.player, 6, setgame, game.cards)
-                console.log(game)
                 setgame({...game, ...{start: !game.start}})
               })})}
               
