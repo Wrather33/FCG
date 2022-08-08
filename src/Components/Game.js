@@ -25,10 +25,12 @@ function Game(){
       if(players.find(p => p.type === 'bot') && !players.find(p=> p.move)){
         setmove(players[Math.floor(Math.random()*players.length)].id)
       }
-      if(players.find(p=> p.move) && !players.find(p=> p.cards.length)){
+      if(players.find(p=> p.move) && players.find(p=> !p.cards.length)){
         givecards()
       }
-      console.log(players)
+      if(players.find(p => !p.ingame) && !players.find(p=> !p.cards.length)){
+        startgame(players)
+      }
     }
   }, [players, game]);
 
@@ -43,7 +45,7 @@ function Game(){
           choose: '',
           move: false,
           type: 'bot',
-          ingame: true
+          ingame: false
         }
         bots.push(bot)
       }
@@ -74,6 +76,15 @@ function Game(){
       setplay(pls)
     }
     
+    function startgame(players){
+      let pls = Object.assign([], players)
+      pls.forEach(p=>{p.ingame=true})
+      setplay(pls)
+
+    }
+    function exitgame(id){
+
+    }
     function checkgame(){
         if(players.find(p => p.type === 'human').name){
             let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1&jokers_enabled=${game.jokers}`
@@ -96,7 +107,7 @@ function Game(){
                 alert('Имя не может быть пустым!')
               }
     }
-    return <div className={styles.Main}>{game.start ? <Board game={game} setgame={setgame} players={players} setplay={setplay}/>
+    return <div className={styles.Main}>{players.find(p => p.ingame) ? <Board game={game} setgame={setgame} players={players} setplay={setplay}/>
     : <Form game={game} setgame={setgame} checkgame={checkgame} changename={changename} players={players} setplay={setplay}/>}</div>
 }
 export default Game

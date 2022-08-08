@@ -15,7 +15,7 @@ export const opts = {
     choose: '',
     move: false,
     type: 'human',
-    ingame: true,
+    ingame: false,
     wins: 0,
     draws: 0,
     losses: 0,
