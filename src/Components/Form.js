@@ -28,7 +28,7 @@ function Form(props){
     return <div className={styles.Form}>
         <h1>Fool Card Game</h1>
         <h2>Your name?</h2>
-        <input value={props.game.player.name} onChange={(e)=>{props.changename(e.target.value)}}></input>
+        <input value={props.players.find(p => p.type === 'human').name} onChange={(e)=>{props.changename(e.target.value)}}></input>
         <h2>Decksize?</h2>
         <input type='radio' name='decksize' value={24} onChange={(e)=>props.setgame({...props.game, ...{decksize: e.target.value}})}></input>24
         <input type='radio' name='decksize' defaultChecked value={36} onChange={(e)=>props.setgame({...props.game, ...{decksize: e.target.value}})}></input>36
