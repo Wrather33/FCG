@@ -20,7 +20,7 @@ function Game(){
     }
 
     useEffect(() => {
-      if(game.start){
+      if(game.start && !players.find(p => p.ingame)){
       if(!players.find(p => p.type === 'bot')){ createbots(game.count) }
       if(players.find(p => p.type === 'bot') && !players.find(p=> p.move)){
         setmove(players[Math.floor(Math.random()*players.length)].id)
