@@ -35,7 +35,7 @@ function Game(){
   }, [players, game]);
 
 
-    function createbots (count) {
+    function createbots(count) {
       let bots = Object.assign([], players)
       for(let i=0; i<count-1; i++){
         let bot = {
@@ -63,14 +63,23 @@ function Game(){
     }
     function givecards(){
       let pls = Object.assign([], players)
-      let ostatok = 6-pls.find(p => p.move).cards.length
-      for(let i =0; i<ostatok;i++){
-        pls.find(p => p.move).cards.push(game.cards.shift())
-      }
+      let idx = pls.indexOf(pls.find(p => p.move))
       pls.forEach(p=>{
-        let ostatok = 6-p.cards.length
-        for(let i =0; i<ostatok;i++){
-          p.cards.push(game.cards.shift())
+        if(pls.indexOf(p) >= idx){
+          let ostatok = 6-p.cards.length
+          for(let i =0; i<ostatok;i++){
+            if(game.cards.length){
+            p.cards.push(game.cards.shift())}
+          }
+        }
+      })
+      pls.forEach(p=>{
+        if(pls.indexOf(p) < idx){
+          let ostatok = 6-p.cards.length
+          for(let i =0; i<ostatok;i++){
+            if(game.cards.length){
+            p.cards.push(game.cards.shift())}
+          }
         }
       })
       setplay(pls)
