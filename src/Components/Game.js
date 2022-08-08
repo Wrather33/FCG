@@ -12,6 +12,7 @@ import { useStateWithCallbackLazy } from 'use-state-with-callback';
 function Game(){
     const [game, setgame] = useState(opts)
     const[players, setplay] = useStateWithCallbackLazy(members)
+    const[board, setboard] = useState([])
 
     function changename(name){
       let newname = Object.assign([], players)
@@ -61,11 +62,11 @@ function Game(){
       ));
     
     }
-    function givecards(){
+    function givecards(id){
       let pls = Object.assign([], players)
       let idx = pls.indexOf(pls.find(p => p.move))
       pls.forEach(p=>{
-        if(pls.indexOf(p) >= idx){
+        if(pls.indexOf(p) >= idx && p.id !== id){
           let ostatok = 6-p.cards.length
           for(let i =0; i<ostatok;i++){
             if(game.cards.length){
@@ -74,7 +75,7 @@ function Game(){
         }
       })
       pls.forEach(p=>{
-        if(pls.indexOf(p) < idx){
+        if(pls.indexOf(p) < idx && p.id !== id){
           let ostatok = 6-p.cards.length
           for(let i =0; i<ostatok;i++){
             if(game.cards.length){
@@ -93,6 +94,18 @@ function Game(){
     }
     function exitgame(id){
 
+    }
+    function move(move){
+      if('take'){
+        /*take cards from board*/
+        /*givecards(lose_id)*/
+      }
+      else if('fight'){
+        /*fight the cards*/
+      }
+      else{
+        /*attack*/
+      }
     }
     function checkgame(){
         if(players.find(p => p.type === 'human').name){
