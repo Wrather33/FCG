@@ -1,68 +1,160 @@
 import { useState, useEffect } from "react"
 import Form from './Form'
-import Board from './Board'
+import Table from './Table'
 import styles from './Main.module.css'
 import shortid from "shortid"
 import {firstNames} from "@faykah/first-names-en";
-import {opts} from './opts'
-import { members } from "./opts"
-import { type } from "@testing-library/user-event/dist/type"
-import { useStateWithCallbackLazy } from 'use-state-with-callback';
+import { useDispatch, useSelector, getState} from "react-redux"
+import {store} from '../Store/store'
+import {points} from './points'
+import { players } from "../Store/players"
 
 function Game(){
-    const [game, setgame] = useState(opts)
-    const[players, setplay] = useStateWithCallbackLazy(members)
-    const[board, setboard] = useState([])
+  const dispatch = useDispatch()
+  const opts = useSelector(state=>state)
+  function take(id){
+    setmove(id+2)
+  }
+  function throwcard(){
 
-    function changename(name){
-      let newname = Object.assign([], players)
-      newname.find(p => p.type === 'human').name = name
-      setplay(newname)
-    }
+  }
+  function attack(){
 
-    useEffect(() => {
-      if(game.start && !players.find(p => p.ingame)){
-      if(!players.find(p => p.type === 'bot')){ createbots(game.count) }
-      if(players.find(p => p.type === 'bot') && !players.find(p=> p.move)){
-        setmove(players[Math.floor(Math.random()*players.length)].id)
-      }
-      if(players.find(p=> p.move) && players.find(p=> !p.cards.length)){
-        givecards()
-      }
-      if(players.find(p => !p.ingame) && !players.find(p=> !p.cards.length)){
-        startgame(players)
-      }
-    }
-  }, [players, game]);
+  }
+  function defend(){
 
+  }
+  function checkgame(){
 
-    function createbots(count) {
-      let bots = Object.assign([], players)
-      for(let i=0; i<count-1; i++){
-        let bot = {
-          id: shortid.generate(),
-          name: firstNames[[Math.floor(Math.random()*firstNames.length)]],
-          cards: [],
-          choose: '',
-          move: false,
-          type: 'bot',
-          ingame: false
+  }
+  function round(id){
+    if(!store.getState().players.find(p=>p.move)){
+    for(let i=0; i<store.getState().players.length; i++){
+    cards(store.getState().deck, 6-store.getState().players[i].cards.length, "GV_CARDS_TO", 'card', store.getState().players[i].id)
+  }
+
+  let fp = {
+    value: 'ACE'
+  }
+  store.getState().players.forEach(p => {
+    p.cards.forEach(c=>{
+      if(c.suit === store.getState().suit){
+        if(points[c.value] < points[fp.value]){
+          fp = c
         }
-        bots.push(bot)
       }
-      setplay(bots)
+    })
+    }); 
+
+    let id = store.getState().players.find(p => {
+      if(p.cards.includes(fp)){
+      return true
+    }
+  })
+  if(id){
+    setmove(id.id)
+  }
+  else{
+    setmove(store.getState().players[Math.floor(Math.random()*store.getState().players.length)].id)
+  }
+
+
+  }
+  else{
+
+  }
+  }
+  function setmove(id){
+    for(let i=0; i<store.getState().players.length; i++){
+    changer("SET_MOVE", {id: store.getState().players[i].id, move: 'throw'})
+    }
+    changer("SET_MOVE", {id: id, move: 'attack'})
+    for(let i=0; i<store.getState().players.length; i++){
+    if(store.getState().players[i].move === 'attack'){
+      if(store.getState().players[i+1]){
+      changer("SET_MOVE", {id: store.getState().players[i+1].id, move: 'defend'})
+      }
+      else{
+        changer("SET_MOVE", {id: store.getState().players[0].id, move: 'defend'})
+      }
+    }
+    }
+  }
+
+    function cards(cards, count, move, prop, id){
+      for(let i=0; i<count; i++){
+        changer(move, {[prop]: cards.shift(), id: id})
+      }
     }
 
-    function setchoose(card){
+    function changer(type, obj){
+      dispatch(Object.assign({type: type}, obj))
+    }
+    function createbots(count){
+     for(let i=0; i<count-1; i++){
+      addplayer(firstNames[Math.floor(Math.random()*firstNames.length)])
+     }
+    }
+    function addplayer(name){
+      let bot = {
+      id: shortid.generate(),
+      name: name,
+      cards: [],
+      choose: '',
+      move: '',
+      type: 'bot',
+      }
+      changer("ADD_PLAYER", {player: bot})
 
     }
-    function setmove(id){
-      setplay(state => state.map(p =>
-        p.id === id ? {...p, move: true} : {...p, move: false}
-      ));
-    
+    function removeplayer(id){
+      changer("RE_PLAYER", {id: id})
     }
-    function givecards(id){
+
+    function start(){
+        if(opts.players.find(p=>p.type === 'human').name){
+            let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
+            fetch(url).then( res => {
+            return res.json()}).then(res=>{
+              return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
+              r=>{return r.json()}).then(r=>{
+                let arr = [...r.cards.filter(c =>
+                  {switch(opts.size) {
+                  case 24: 
+                  return c.value >= 9 || isNaN(c.value)
+                  case 36:
+                  return c.value >= 6 || isNaN(c.value)
+                  default:
+                    return c.value
+                  }})]
+                  cards(arr, arr.length, "DC_ADD", 'card')
+                  changer("CH_ST", {suit: store.getState().deck[store.getState().deck.length-1].suit})
+                  createbots(store.getState().count)
+                  changer("CH_START", {start: true})
+                  round()
+                  
+                  
+                  /*players*/
+                  /*move*/
+                  /*givecards*/
+                  /*changer("CH_START", 'start', true)*/
+                  
+                
+              })})}
+              
+              else{
+                alert('Имя не может быть пустым!')
+              }
+    }
+    console.log(opts)
+    return <div className={styles.Main}>{opts.start ? <Table changer={changer}/>
+    : <Form start={start} changer={changer}/>}</div>
+}
+
+export default Game
+
+
+/*function givecards(id){
       let pls = Object.assign([], players)
       let idx = pls.indexOf(pls.find(p => p.move))
       pls.forEach(p=>{
@@ -84,52 +176,4 @@ function Game(){
         }
       })
       setplay(pls)
-    }
-    
-    function startgame(players){
-      let pls = Object.assign([], players)
-      pls.forEach(p=>{p.ingame=true})
-      setplay(pls)
-
-    }
-    function exitgame(id){
-
-    }
-    function move(move){
-      if('take'){
-        /*take cards from board*/
-        /*givecards(lose_id)*/
-      }
-      else if('fight'){
-        /*fight the cards*/
-      }
-      else{
-        /*attack*/
-      }
-    }
-    function checkgame(){
-        if(players.find(p => p.type === 'human').name){
-            let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1&jokers_enabled=${game.jokers}`
-            fetch(url).then( res => {
-            return res.json()}).then(res=>{return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
-              r=>{return r.json()}).then(r=>{
-                setgame({...game, cards: game.cards.push(...r.cards.filter(c =>
-                  {switch(+game.decksize) {
-                  case 24: 
-                  return c.value >= 9 || isNaN(c.value)
-                  case 36:
-                  return c.value >= 6 || isNaN(c.value)
-                  default:
-                    return c.value
-                }}))})
-                setgame({...game, ...{start: !game.start}})
-              })})}
-              
-              else{
-                alert('Имя не может быть пустым!')
-              }
-    }
-    return <div className={styles.Main}>{players.find(p => p.ingame) ? <Board game={game} setgame={setgame} players={players} setplay={setplay}/>
-    : <Form game={game} setgame={setgame} checkgame={checkgame} changename={changename} players={players} setplay={setplay}/>}</div>
-}
-export default Game
+    }*/

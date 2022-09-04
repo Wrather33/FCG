@@ -1,0 +1,23 @@
+.Card{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform-origin: 50% 100%;
+}
+
+.Card img{
+    max-width: 80%;
+}
+.choose{
+    position: absolute;
+    left: 20vw;
+    bottom: 15vh;
+    color: aliceblue;
+    text-shadow: 3px 2px 3px #000;
+}
+.Card img:hover{
+    border: 2px solid red;
+    border-radius: 10px;
+}

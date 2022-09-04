@@ -1,0 +1,10 @@
+.Player{
+    width: 140px;
+    height: 200px;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 1vh;
+    left: 0;
+    right: 0;
+    text-align: center;
+}

@@ -1,22 +1,20 @@
 import shortid from "shortid"
 export const opts = {
-    start: false,
     decksize: 36,
     jokers: false,
     type: 'Подкидной',
-    cards: [],
     suit: '',
-    count: 2
+    count: 2,
+    start: false
   }
-  export const members = [{
+  export const player = [{
     id: shortid.generate(),
     name: 'guest',
     cards: [],
     choose: '',
-    move: false,
+    move: 'wait',
     type: 'human',
-    ingame: false,
     wins: 0,
     draws: 0,
-    losses: 0,
+    losses: 0
     }]
