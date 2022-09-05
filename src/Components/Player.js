@@ -8,7 +8,6 @@ import { players } from "../Store/players"
 
 function Player(props){
     let player = useSelector(st=>st.players.find(p=>p.type === 'human'))
-    console.log(player)
     let start
     if(player.cards.length < 2){
         start = 0

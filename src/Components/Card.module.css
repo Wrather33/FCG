@@ -1,14 +1,27 @@
-.Card{
+.PLCard{
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     transform-origin: 50% 100%;
+    text-align: center;
+}
+.PLCard img{
+    max-width: 80%;
+}
+.PLCard img:hover{
+    border: 2px solid red;
+    border-radius: 10px;
 }
 
-.Card img{
-    max-width: 80%;
+.BotCard{
+    transform-origin: 50% 100%;
+    position: absolute;
+    height: 100px;
+}
+.BotCard img{
+    max-height: 100%;
 }
 .choose{
     position: absolute;
@@ -16,8 +29,4 @@
     bottom: 15vh;
     color: aliceblue;
     text-shadow: 3px 2px 3px #000;
-}
-.Card img:hover{
-    border: 2px solid red;
-    border-radius: 10px;
 }
