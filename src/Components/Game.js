@@ -6,34 +6,37 @@ import shortid from "shortid"
 import {firstNames} from "@faykah/first-names-en";
 import { useDispatch, useSelector, getState} from "react-redux"
 import {store} from '../Store/store'
-import {points} from './points'
-import {AddDeck, AddPlayer, ChangeSuit, ChangeStart, GVcardsTo, SetMove} from '../Store/ActionCreators/actioncreators'
+import {points} from '../Points/points'
+import {AddDeck, AddPlayer, ChangeSuit, ChangeStart, GVcardsTo, SetMove, SetActive, TKcardsFROM, SortCards} from '../Store/ActionCreators/actioncreators'
 function Game(){
   const dispatch = useDispatch()
   const opts = useSelector(state=>state)
-  function process(type, id){
+  function process(type, card, id){
     if(type === 'attack'){
-      changer()
+      if(store.getState().players.find(p=>p.id === id).type === 'human'){
+        if(!store.getState().board.length || store.getState().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
+          let newcard = {
+            active: card,
+            beaten: '',
+            id: shortid.generate()
+          }
+          changer(TKcardsFROM(card, id))
+          changer(SetActive(newcard))
+          let defender = store.getState().players.find(p=>p.move === 'defend')
+          if(defender.cards.find()){
+
+          }
+      }
+      else{
+        alert('This card cannot be thrown!')
+      }
     }
-    else if(type === 'take'){
-      take(id)
-      round(id+2)
+    else{
+
     }
-  }
-  function take(id){
-  }
-  function throwcard(){
-
-  }
-  function attack(card){
-
-  }
-  function defend(){
-
-  }
-  function checkgame(){
-
-  }
+    /*if attack - defend by card or take*/
+  }}
+  
   function round(id){
     
     if(!store.getState().players.find(p=>p.move)){
@@ -83,6 +86,7 @@ function Game(){
       }
     }
     }
+    changer(SortCards('bot'))
     process()
   }
 
@@ -137,14 +141,7 @@ function Game(){
                   createbots(store.getState().count)
                   changer(ChangeStart(!store.getState().start))
                   round()
-                  
-                  
-                  /*players*/
-                  /*move*/
-                  /*givecards*/
-                  /*changer("CH_START", 'start', true)*/
-                  
-                
+                          
               })})}
               
               else{
@@ -181,4 +178,26 @@ export default Game
         }
       })
       setplay(pls)
+    }*/
+
+
+    /*if(type === 'attack' && store.getState().players.find(p=>p.id === id).type === 'human'){
+      if(!store.getState().board.length || store.getState().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
+      let newcard = {
+        active: card,
+        beaten: '',
+        id: shortid.generate()
+      }
+      changer(SetActive(newcard))
+      if(store.getState().players.find(p=>p.id === id).type){
+        changer(SetBeaten(card, id))
+      }
+      else if('reverse'){
+
+      }
+      else if('take'){
+
+      }
+      }
+      
     }*/

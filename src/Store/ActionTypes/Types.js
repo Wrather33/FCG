@@ -14,5 +14,9 @@ export const actions={
     CH_SIZE: "CH_SIZE",
     CH_START: "CH_START",
     CH_ST: "CH_ST",
-    CH_TP: "CH_TP"
+    CH_TP: "CH_TP",
+    SET_ACTIVE: 'SET_ACTIVE',
+    SET_BEATEN: 'SET_BEATEN',
+    SET_CLEAR: 'SET_CLEAR',
+    SORT_CARDS: 'SORT_CARDS'
 }

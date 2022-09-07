@@ -47,3 +47,9 @@ export const SetChoice = (choice, id)=>(
 export const SetMove = (move, id)=>(
     {type: actions.SET_MOVE, move: move, id: id}
 )
+export const SetActive = (card) =>(
+    {type: actions.SET_ACTIVE, card}
+)
+export const SortCards = (player) =>(
+    {type: actions.SORT_CARDS, player}
+)
