@@ -7,18 +7,25 @@ import {firstNames} from "@faykah/first-names-en";
 import { useDispatch, useSelector, getState} from "react-redux"
 import {store} from '../Store/store'
 import {points} from './points'
-import { players } from "../Store/players"
-
+import {AddDeck, AddPlayer, ChangeSuit, ChangeStart, GVcardsTo, SetMove} from '../Store/ActionCreators/actioncreators'
 function Game(){
   const dispatch = useDispatch()
   const opts = useSelector(state=>state)
+  function process(type, id){
+    if(type === 'attack'){
+      changer()
+    }
+    else if(type === 'take'){
+      take(id)
+      round(id+2)
+    }
+  }
   function take(id){
-    setmove(id+2)
   }
   function throwcard(){
 
   }
-  function attack(){
+  function attack(card){
 
   }
   function defend(){
@@ -28,12 +35,11 @@ function Game(){
 
   }
   function round(id){
+    
     if(!store.getState().players.find(p=>p.move)){
     for(let i=0; i<store.getState().players.length; i++){
-    cards(store.getState().deck, 6-store.getState().players[i].cards.length, "GV_CARDS_TO", 'card', store.getState().players[i].id)
-  }
-
-  let fp = {
+    cards(store.getState().deck, 6-store.getState().players[i].cards.length, GVcardsTo, store.getState().players[i].id)}
+    let fp = {
     value: 'ACE'
   }
   store.getState().players.forEach(p => {
@@ -57,8 +63,6 @@ function Game(){
   else{
     setmove(store.getState().players[Math.floor(Math.random()*store.getState().players.length)].id)
   }
-
-
   }
   else{
 
@@ -66,29 +70,30 @@ function Game(){
   }
   function setmove(id){
     for(let i=0; i<store.getState().players.length; i++){
-    changer("SET_MOVE", {id: store.getState().players[i].id, move: 'throw'})
+    changer(SetMove('throw', store.getState().players[i].id))
     }
-    changer("SET_MOVE", {id: id, move: 'attack'})
+    changer(SetMove('attack', id))
     for(let i=0; i<store.getState().players.length; i++){
     if(store.getState().players[i].move === 'attack'){
       if(store.getState().players[i+1]){
-      changer("SET_MOVE", {id: store.getState().players[i+1].id, move: 'defend'})
+      changer(SetMove('defend', store.getState().players[i+1].id))
       }
       else{
-        changer("SET_MOVE", {id: store.getState().players[0].id, move: 'defend'})
+        changer(SetMove('defend', store.getState().players[0].id))
       }
     }
     }
+    process()
   }
 
-    function cards(cards, count, move, prop, id){
+    function cards(cards, count, action, id){
       for(let i=0; i<count; i++){
-        changer(move, {[prop]: cards.shift(), id: id})
+        changer(action(cards.shift(), id))
       }
     }
 
-    function changer(type, obj){
-      dispatch(Object.assign({type: type}, obj))
+    function changer(action){
+      dispatch(action)
     }
     function createbots(count){
      for(let i=0; i<count-1; i++){
@@ -104,11 +109,11 @@ function Game(){
       move: '',
       type: 'bot',
       }
-      changer("ADD_PLAYER", {player: bot})
+      changer(AddPlayer(bot))
 
     }
     function removeplayer(id){
-      changer("RE_PLAYER", {id: id})
+      
     }
 
     function start(){
@@ -127,10 +132,10 @@ function Game(){
                   default:
                     return c.value
                   }})]
-                  cards(arr, arr.length, "DC_ADD", 'card')
-                  changer("CH_ST", {suit: store.getState().deck[store.getState().deck.length-1].suit})
+                  cards(arr, arr.length, AddDeck)
+                  changer(ChangeSuit(store.getState().deck[store.getState().deck.length-1].suit))
                   createbots(store.getState().count)
-                  changer("CH_START", {start: true})
+                  changer(ChangeStart(!store.getState().start))
                   round()
                   
                   
@@ -147,7 +152,7 @@ function Game(){
               }
     }
     console.log(opts)
-    return <div className={styles.Main}>{opts.start ? <Table changer={changer}/>
+    return <div className={styles.Main}>{opts.start ? <Table changer={changer} process={process}/>
     : <Form start={start} changer={changer}/>}</div>
 }
 

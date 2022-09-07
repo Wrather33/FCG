@@ -9,7 +9,7 @@ function Table(props){
     let bots = useSelector(st=>st.players.filter(p=>p.type === 'bot'))
     return <div>
     <Stats/>
-    <Player changer={props.changer}/>
+    <Player changer={props.changer} process={props.process}/>
     <Others bots={bots}/>
     {/*bots*/}
     {/*<Board/>*/}

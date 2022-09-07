@@ -8,3 +8,15 @@
     right: 0;
     text-align: center;
 }
+.choose{
+    position: absolute;
+    left: 20vw;
+    bottom: 15vh;
+}
+.choose h2{
+    color: aliceblue;
+    text-shadow: 3px 2px 3px #000
+}
+.choose button{
+    font-size: 120%;
+}

@@ -1,13 +1,14 @@
-
-export const BinReducer = (state = [], action) =>{
+import {defaultstate} from '../defaultstate'
+import {actions} from '../ActionTypes/Types'
+export const BinReducer = (state = defaultstate.bin, action) =>{
     switch(action.type){
-      case "BN_ADD":
+      case actions.BN_ADD:
         return [
           ...state,
           action.card
         ]
 
-      case "BN_REM":
+      case actions.BN_REM:
         return state.filter(c=> c.code !== action.card.code)
       default: return state
     }

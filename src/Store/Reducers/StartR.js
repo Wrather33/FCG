@@ -1,5 +1,5 @@
-import {form} from '../form'
-export const StartReducer = (state = form.start, action) =>{
+import {defaultstate} from '../defaultstate'
+export const StartReducer = (state = defaultstate.start, action) =>{
     switch(action.type){
       case "CH_START":
         return action.start

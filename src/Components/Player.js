@@ -4,10 +4,10 @@ import styles from './Player.module.css'
 import style from './Card.module.css'
 import Card from './Card'
 import shortid from "shortid"
-import { players } from "../Store/players"
 
 function Player(props){
     let player = useSelector(st=>st.players.find(p=>p.type === 'human'))
+    let board = useSelector(st=>st.board)
     let start
     if(player.cards.length < 2){
         start = 0
@@ -25,7 +25,17 @@ function Player(props){
             start += point
             return <Card img={c.image} key={shortid.generate()} deg={d} changer={props.changer} id={player.id} card={c}/>
         })
-    return <div className={styles.Player}><div className={style.choose}><h2>{player.choose.value} {player.choose.suit}</h2></div>{cards}</div>
+    const moves = () =>{
+        let buttons = []
+        if(player.choice && player.move === 'attack'){
+            buttons.push(<button onClick={()=>{props.process(player.move)}}>Attack</button>)
+            if(board.length){
+                buttons.push(<button onClick={()=>{props.process('finish')}}>Finish</button>)
+            }
+        }
+        return <div>{buttons}</div>
+    }
+    return <div className={styles.Player}><div className={styles.choose}>{player.choice && <h2>{player.choice.value} {player.choice.suit}</h2>}{moves()}</div>{cards}</div>
 
 }
 

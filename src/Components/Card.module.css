@@ -23,10 +23,3 @@
 .BotCard img{
     max-height: 100%;
 }
-.choose{
-    position: absolute;
-    left: 20vw;
-    bottom: 15vh;
-    color: aliceblue;
-    text-shadow: 3px 2px 3px #000;
-}

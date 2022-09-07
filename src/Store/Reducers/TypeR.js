@@ -1,7 +1,8 @@
-import {form} from '../form'
-export const TypeReducer = (state = form.type, action) =>{
+import {defaultstate} from '../defaultstate'
+import {actions} from '../ActionTypes/Types'
+export const TypeReducer = (state = defaultstate.type, action) =>{
     switch(action.type){
-      case "CH_TP":
+      case actions.CH_TP:
         return action.tp
       default: return state
     }

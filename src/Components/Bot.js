@@ -21,7 +21,7 @@ function Bot(props){
             start += point
             return <BotCard key={shortid.generate()} deg={d} changer={props.changer} card={c}/>
         })
-    return <div className={styles.Bot}><h2>{props.name}</h2>{cards}</div>
+    return <div className={styles.Bot}><p>{props.name}</p>{cards}</div>
 
 }
 export default Bot
