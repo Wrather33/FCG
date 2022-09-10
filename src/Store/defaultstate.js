@@ -4,6 +4,7 @@ export const defaultstate = {
     type: 'Подкидной',
     suit: '',
     count: 2,
+    round: 0,
     start: false,
     deck: [],
     bin: [],

@@ -12,14 +12,7 @@ export const BoardReducer = (state = [], action) =>{
         action.card
       ]
       case actions.SET_BEATEN:
-        state.map(c=>{
-          if(c.suit === action.card.suit){
-
-          }
-          else if(action.card.suit === store.getState().suit){
-            action.card.value += points.ACE
-          }
-        })
+        return state.map(c=> c.code === action.code ? {...c, beaten: action.card} : c)
       case actions.SET_CLEAR:
       default: return state
     }

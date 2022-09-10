@@ -50,6 +50,12 @@ export const SetMove = (move, id)=>(
 export const SetActive = (card) =>(
     {type: actions.SET_ACTIVE, card}
 )
+export const SetBeaten = (card, code) =>(
+    {type: actions.SET_BEATEN, card: card, code: code}
+)
 export const SortCards = (player) =>(
     {type: actions.SORT_CARDS, player}
+)
+export const NextRound = ()=>(
+    {type: actions.NXT_RND}
 )

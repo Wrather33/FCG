@@ -18,5 +18,6 @@ export const actions={
     SET_ACTIVE: 'SET_ACTIVE',
     SET_BEATEN: 'SET_BEATEN',
     SET_CLEAR: 'SET_CLEAR',
-    SORT_CARDS: 'SORT_CARDS'
+    SORT_CARDS: 'SORT_CARDS',
+    NXT_RND: 'NXT_RND'
 }

@@ -28,7 +28,7 @@ function Player(props){
     const moves = () =>{
         let buttons = []
         if(player.choice && player.move === 'attack'){
-            buttons.push(<button onClick={()=>{props.process(player.move, player.choice, player.id)}} key={shortid.generate()}>Attack</button>)
+            buttons.push(<button onClick={()=>{props.funcs.attack(player.id, player.choice)}} key={shortid.generate()}>Attack</button>)
             if(board.length){
                 buttons.push(<button onClick={()=>{props.process('finish')}} key={shortid.generate()}>Finish</button>)
             }

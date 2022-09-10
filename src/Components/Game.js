@@ -7,25 +7,56 @@ import {firstNames} from "@faykah/first-names-en";
 import { useDispatch, useSelector, getState} from "react-redux"
 import {store} from '../Store/store'
 import {points} from '../Points/points'
-import {AddDeck, AddPlayer, ChangeSuit, ChangeStart, GVcardsTo, SetMove, SetActive, TKcardsFROM, SortCards} from '../Store/ActionCreators/actioncreators'
+import {AddDeck, AddPlayer, ChangeSuit, ChangeStart, GVcardsTo, SetMove, SetActive, TKcardsFROM, SortCards, SetBeaten, NextRound, SetChoice} from '../Store/ActionCreators/actioncreators'
+import { BoardReducer } from "../Store/Reducers/BoardR"
 function Game(){
   const dispatch = useDispatch()
   const opts = useSelector(state=>state)
-  function process(type, card, id){
-    if(type === 'attack'){
-      if(store.getState().players.find(p=>p.id === id).type === 'human'){
-        if(!store.getState().board.length || store.getState().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
+
+  function current(){
+    return store.getState()
+  }
+
+  function finish(){
+    if('!beaten'){
+      /*take(id)*/
+    }
+    else{
+      /*ToBin*/
+    }
+  }
+  function UpdateChoice(id){
+    if(current().players.find(p=>p.id === id).cards.length){
+      changer(SetChoice(current().players.find(p=>p.id === id).cards[0], id))
+      }
+      else{
+        changer(SetChoice('', id))
+      }
+  }
+
+  function checksuit(card){
+    if(card.suit === opts.suit){
+      return points[card.value] += points['ACE']
+    }
+    else{
+      return points[card.value]
+    }
+  }
+
+  function attack(id, card){
+    if(opts.round <= 1 && opts.board.length <= 5 || opts.round >= 2 && opts.board.length <= 6){
+      if(current().players.find(p=>p.id === id).type === 'human'){
+        if(!current().board.length || current().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
           let newcard = {
             active: card,
             beaten: '',
-            id: shortid.generate()
+            code: card.code
           }
           changer(TKcardsFROM(card, id))
           changer(SetActive(newcard))
-          let defender = store.getState().players.find(p=>p.move === 'defend')
-          if(defender.cards.find()){
-
-          }
+          UpdateChoice(id)
+          let defender = current().players.find(p=>p.move === 'defend')
+          defend(defender.id)
       }
       else{
         alert('This card cannot be thrown!')
@@ -34,60 +65,89 @@ function Game(){
     else{
 
     }
-    /*if attack - defend by card or take*/
-  }}
-  
-  function round(id){
-    
-    if(!store.getState().players.find(p=>p.move)){
-    for(let i=0; i<store.getState().players.length; i++){
-    cards(store.getState().deck, 6-store.getState().players[i].cards.length, GVcardsTo, store.getState().players[i].id)}
-    let fp = {
-    value: 'ACE'
+
+    }
+    else{
+      alert('The board is full!')
+    }
   }
-  store.getState().players.forEach(p => {
+  function defend(id, card){
+    let player = current().players.find(p=>p.id === id)
+    if(player.type === 'human'){
+
+    }
+    else{
+      setTimeout(()=>{
+      let ToBeat = current().board.find(c=>!c.beaten)
+      if(ToBeat){
+        let beaten = player.cards.find(c=> checksuit(c) > checksuit(ToBeat.active) && c.suit === ToBeat.active.suit || c.suit === opts.suit)
+          if(beaten){
+            changer(TKcardsFROM(beaten, id))
+            changer(SetBeaten(beaten, ToBeat.code))
+            let NotBeat = current().board.find(c=>!c.beaten)
+            if(NotBeat){
+              defend(id)
+            }
+          }
+          else{
+            
+          }
+      }
+    }, Math.floor(Math.random() * 2000) + 1000)}
+
+  }
+  function round(id){
+    if(!current().players.find(p=>p.move)){
+    for(let i=0; i<current().players.length; i++){
+    cards(current().deck, 6-current().players[i].cards.length, GVcardsTo, current().players[i].id)}
+    let fp = {
+    value: 'ACE'  }
+    current().players.forEach(p => {
     p.cards.forEach(c=>{
-      if(c.suit === store.getState().suit){
+      if(c.suit === current().suit){
         if(points[c.value] < points[fp.value]){
           fp = c
         }
       }
     })
     }); 
-
-    let id = store.getState().players.find(p => {
+    let suiter = current().players.find(p => {
       if(p.cards.includes(fp)){
       return true
     }
   })
-  if(id){
-    setmove(id.id)
+  if(suiter){
+    setmove(suiter.id)
   }
   else{
-    setmove(store.getState().players[Math.floor(Math.random()*store.getState().players.length)].id)
+    setmove(current().players[Math.floor(Math.random()*current().players.length)].id)
   }
   }
   else{
 
   }
+  changer(NextRound(!current().start))
+  let walker = current().players.find(c=> c.move === 'attack')
+  if(walker && walker.type === 'bot'){
+    attack(walker.id)
   }
+}
   function setmove(id){
-    for(let i=0; i<store.getState().players.length; i++){
-    changer(SetMove('throw', store.getState().players[i].id))
+    for(let i=0; i<current().players.length; i++){
+    changer(SetMove('throw', current().players[i].id))
     }
     changer(SetMove('attack', id))
-    for(let i=0; i<store.getState().players.length; i++){
-    if(store.getState().players[i].move === 'attack'){
-      if(store.getState().players[i+1]){
-      changer(SetMove('defend', store.getState().players[i+1].id))
+    for(let i=0; i<current().players.length; i++){
+    if(current().players[i].move === 'attack'){
+      if(current().players[i+1]){
+      changer(SetMove('defend', current().players[i+1].id))
       }
       else{
-        changer(SetMove('defend', store.getState().players[0].id))
+        changer(SetMove('defend', current().players[0].id))
       }
     }
     }
     changer(SortCards('bot'))
-    process()
   }
 
     function cards(cards, count, action, id){
@@ -137,9 +197,9 @@ function Game(){
                     return c.value
                   }})]
                   cards(arr, arr.length, AddDeck)
-                  changer(ChangeSuit(store.getState().deck[store.getState().deck.length-1].suit))
-                  createbots(store.getState().count)
-                  changer(ChangeStart(!store.getState().start))
+                  changer(ChangeSuit(current().deck[current().deck.length-1].suit))
+                  createbots(current().count)
+                  changer(ChangeStart(!current().start))
                   round()
                           
               })})}
@@ -149,12 +209,14 @@ function Game(){
               }
     }
     console.log(opts)
-    return <div className={styles.Main}>{opts.start ? <Table changer={changer} process={process}/>
+    let funcs = {
+      attack: attack,
+    }
+    return <div className={styles.Main}>{opts.start ? <Table changer={changer} funcs={funcs}/>
     : <Form start={start} changer={changer}/>}</div>
 }
 
 export default Game
-
 
 /*function givecards(id){
       let pls = Object.assign([], players)
@@ -181,23 +243,45 @@ export default Game
     }*/
 
 
-    /*if(type === 'attack' && store.getState().players.find(p=>p.id === id).type === 'human'){
-      if(!store.getState().board.length || store.getState().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
-      let newcard = {
-        active: card,
-        beaten: '',
-        id: shortid.generate()
-      }
-      changer(SetActive(newcard))
-      if(store.getState().players.find(p=>p.id === id).type){
-        changer(SetBeaten(card, id))
-      }
-      else if('reverse'){
 
+  /*if(type === 'attack'){
+      if(current().players.find(p=>p.id === id).type === 'human'){
+        if(!current().board.length || current().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
+          let newcard = {
+            active: card,
+            beaten: '',
+            code: card.code
+          }
+          changer(TKcardsFROM(card, id))
+          changer(SetActive(newcard))
+          let defender = current().players.find(p=>p.move === 'defend')
+          process('defend', defender.id)
       }
-      else if('take'){
+      else{
+        alert('This card cannot be thrown!')
+      }
+    }
+    else{
 
+    }
+    
+  }
+  else if(type === 'defend'){
+    if(current().players.find(p=>p.id === id).type === 'human'){}
+    else{
+      let defender = current().players.find(p=>p.id === id)
+      for(let i=0; i<current().board.length; i++){
+        if(!current().board[i].beaten){
+          let ToBeat = current().board[i]
+          let beaten = defender.cards.find(c=> checksuit(c) > checksuit(ToBeat.active) && c.suit === ToBeat.active.suit || c.suit === opts.suit)
+          if(beaten){
+            changer(SetBeaten(beaten, ToBeat.code))
+          }
+          else{
+            
+          }
+        }
       }
-      }
-      
-    }*/
+    }
+  }*/
+    

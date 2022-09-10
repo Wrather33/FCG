@@ -8,6 +8,7 @@ import{StartReducer} from './Reducers/StartR'
 import {PlayersReducer} from './Reducers/PlayersR'
 import {BinReducer} from './Reducers/BinR'
 import {BoardReducer} from './Reducers/BoardR'
+import {RoundReducer} from './Reducers/RoundR'
 import {createStore, combineReducers}  from 'redux';
 import { defaultstate } from './defaultstate'
 
@@ -20,6 +21,7 @@ const root = combineReducers({
   start: StartReducer,
   players: PlayersReducer,
   bin: BinReducer, 
-  board: BoardReducer
+  board: BoardReducer,
+  round: RoundReducer
 })
 export const store = createStore(root, defaultstate)
