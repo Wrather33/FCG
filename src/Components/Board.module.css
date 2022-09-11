@@ -1,0 +1,24 @@
+
+.Board{
+    width: 400px;
+    height: 250px;
+    display: flex;
+    justify-content: start;
+    flex-flow: row wrap;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 40vh;
+    gap: 40%;
+}
+.BoardCard{
+    width: fit-content;
+}
+.BoardCard img{
+    position: absolute;
+    height: 100px;
+    transform-origin: 50% 100%;
+
+}

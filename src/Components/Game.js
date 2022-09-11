@@ -18,12 +18,7 @@ function Game(){
   }
 
   function finish(){
-    if('!beaten'){
-      /*take(id)*/
-    }
-    else{
-      /*ToBin*/
-    }
+    /*id+1 throw*/
   }
   function UpdateChoice(id){
     if(current().players.find(p=>p.id === id).cards.length){
@@ -44,7 +39,7 @@ function Game(){
   }
 
   function attack(id, card){
-    if(opts.round <= 1 && opts.board.length <= 5 || opts.round >= 2 && opts.board.length <= 6){
+    if(opts.round <= 1 && opts.board.length <= 4 || opts.round >= 2 && opts.board.length <= 5){
       if(current().players.find(p=>p.id === id).type === 'human'){
         if(!current().board.length || current().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
           let newcard = {
@@ -77,13 +72,14 @@ function Game(){
 
     }
     else{
-      setTimeout(()=>{
+      
       let ToBeat = current().board.find(c=>!c.beaten)
       if(ToBeat){
-        let beaten = player.cards.find(c=> checksuit(c) > checksuit(ToBeat.active) && c.suit === ToBeat.active.suit || c.suit === opts.suit)
+        let beaten = player.cards.find(c=> checksuit(c) > checksuit(ToBeat.active) && (c.suit === ToBeat.active.suit || c.suit === opts.suit))
           if(beaten){
-            changer(TKcardsFROM(beaten, id))
-            changer(SetBeaten(beaten, ToBeat.code))
+            changer(SetChoice(beaten, id))
+            changer(TKcardsFROM(current().players.find(p=>p.id === id).choice, id))
+            changer(SetBeaten(current().players.find(p=>p.id === id).choice, ToBeat.code))
             let NotBeat = current().board.find(c=>!c.beaten)
             if(NotBeat){
               defend(id)
@@ -93,7 +89,7 @@ function Game(){
             
           }
       }
-    }, Math.floor(Math.random() * 2000) + 1000)}
+    }
 
   }
   function round(id){
@@ -169,7 +165,7 @@ function Game(){
       id: shortid.generate(),
       name: name,
       cards: [],
-      choose: '',
+      choice: '',
       move: '',
       type: 'bot',
       }
@@ -241,47 +237,4 @@ export default Game
       })
       setplay(pls)
     }*/
-
-
-
-  /*if(type === 'attack'){
-      if(current().players.find(p=>p.id === id).type === 'human'){
-        if(!current().board.length || current().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
-          let newcard = {
-            active: card,
-            beaten: '',
-            code: card.code
-          }
-          changer(TKcardsFROM(card, id))
-          changer(SetActive(newcard))
-          let defender = current().players.find(p=>p.move === 'defend')
-          process('defend', defender.id)
-      }
-      else{
-        alert('This card cannot be thrown!')
-      }
-    }
-    else{
-
-    }
-    
-  }
-  else if(type === 'defend'){
-    if(current().players.find(p=>p.id === id).type === 'human'){}
-    else{
-      let defender = current().players.find(p=>p.id === id)
-      for(let i=0; i<current().board.length; i++){
-        if(!current().board[i].beaten){
-          let ToBeat = current().board[i]
-          let beaten = defender.cards.find(c=> checksuit(c) > checksuit(ToBeat.active) && c.suit === ToBeat.active.suit || c.suit === opts.suit)
-          if(beaten){
-            changer(SetBeaten(beaten, ToBeat.code))
-          }
-          else{
-            
-          }
-        }
-      }
-    }
-  }*/
     

@@ -4,6 +4,7 @@ import Deck from './Deck'
 import { useSelector } from 'react-redux'
 import Player from './Player'
 import Others from './Others'
+import Board from './Board'
 function Table(props){
     let deck = useSelector(state => state.deck)
     let bots = useSelector(st=>st.players.filter(p=>p.type === 'bot'))
@@ -11,8 +12,7 @@ function Table(props){
     <Stats/>
     <Player changer={props.changer} funcs={props.funcs} />
     <Others bots={bots}/>
-    {/*bots*/}
-    {/*<Board/>*/}
+    <Board/>
     {/*<Bin/>*/}
     <Deck deck={deck}/></div>
 }
