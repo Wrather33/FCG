@@ -13,6 +13,17 @@ function Game(){
   const dispatch = useDispatch()
   const opts = useSelector(state=>state)
 
+  function average(cards)
+{
+  let sum = 0
+  let i = 0
+  while(i < cards.length){
+    sum += checksuit(cards[i])
+    i++
+  }
+  return sum/cards.length
+}
+
   function current(){
     return store.getState()
   }
@@ -30,7 +41,7 @@ function Game(){
   }
 
   function checksuit(card){
-    if(card.suit === opts.suit){
+    if(card.suit === current().suit){
       return points[card.value] += points['ACE']
     }
     else{
@@ -39,7 +50,7 @@ function Game(){
   }
 
   function attack(id, card){
-    if(opts.round <= 1 && opts.board.length <= 4 || opts.round >= 2 && opts.board.length <= 5){
+    if(current().round <= 1 && current().board.length <= 4 || current().round >= 2 && current().board.length <= 5){
       if(current().players.find(p=>p.id === id).type === 'human'){
         if(!current().board.length || current().board.find(c=> c.active.value === card.value || c.beaten.value === card.value)){
           let newcard = {
@@ -144,6 +155,7 @@ function Game(){
     }
     }
     changer(SortCards('bot'))
+    console.log(average(current().players.find(p=>p.type === 'human').cards))
   }
 
     function cards(cards, count, action, id){
