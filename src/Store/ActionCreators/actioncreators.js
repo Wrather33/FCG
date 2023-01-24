@@ -1,61 +1,40 @@
 import {actions} from '../ActionTypes/Types';
-export const ChangeName = (id, name) => (
-    {type: actions.CH_USR_NM, id: id, name: name}
+export const ChangeAuth = (status)=>(
+    {type: actions.CH_AUTH, status}
 )
-export const ChangeSize = (size) =>(
-    {type: actions.CH_SIZE, size}
+export const ChangeName = (name) => (
+    {type: actions.CH_USR_NM, name}
+)
+export const ChangeId = (id) => (
+    {type: actions.CH_ID, id}
+)
+export const ChangeList = (rooms)=>(
+    {type: actions.CH_LIST, rooms}
 )
 export const ChangeCount = (count) =>(
     {type: actions.CH_CNT, count}
 )
-export const ChangeType = (tp) =>(
-    {type: actions.CH_TP, tp}
+export const ChangeSize = (size) =>(
+    {type: actions.CH_SIZE, size}
 )
-export const ChangeSuit = (suit) =>(
-    {type: actions.CH_ST, suit}
+export const ChangeType= (tp) =>(
+    {type: actions.CH_TYPE, tp}
 )
-export const ChangeStart = (start) =>(
-    {type: actions.CH_START, start}
+/*
+export const SearchCount = (count) =>(
+    {type: actions.SE_CNT, count}
 )
-export const AddDeck = (card) =>(
-    {type: actions.DC_ADD, card}
+export const SearchSize = (size) =>(
+    {type: actions.SE_SIZE, size}
 )
-export const ReDeck = (code) =>(
-    {type: actions.DC_ADD, code}
+export const SearchType = (tp) =>(
+    {type: actions.SE_TYPE, tp}
 )
-export const ReBin = (code) =>(
-    {type: actions.DC_ADD, code}
+export const SearchInit = (size, count, tp) =>(
+    {type: actions.SE_INIT, size: size, count: count, tp: tp}
 )
-export const AddBin = (card) =>(
-    {type: actions.DC_ADD, card}
-)
-export const AddPlayer = (player) => (
-    {type: actions.ADD_PLAYER, player}
-)
-export const GVcardsTo = (card, id) => (
-    {type: actions.GV_CARDS_TO, card: card, id: id}
-)
-export const TKcardsFROM = (card, id) =>(
-    {type: actions.TK_CARDS_FROM, card: card, id: id}
-)
-export const RePlayer = (id) => (
-    {type: actions.RE_PLAYER, id}
-)
-export const SetChoice = (choice, id)=>(
-    {type: actions.SET_CH, choice: choice, id: id}
-)
-export const SetMove = (move, id)=>(
-    {type: actions.SET_MOVE, move: move, id: id}
-)
-export const SetActive = (card) =>(
-    {type: actions.SET_ACTIVE, card}
-)
-export const SetBeaten = (card, code) =>(
-    {type: actions.SET_BEATEN, card: card, code: code}
-)
-export const SortCards = (player) =>(
-    {type: actions.SORT_CARDS, player}
-)
-export const NextRound = ()=>(
-    {type: actions.NXT_RND}
-)
+export const SearchClear = () =>(
+    {type: actions.SE_CLR}
+)*/
+
+

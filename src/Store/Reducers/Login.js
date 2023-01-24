@@ -1,13 +1,19 @@
 import {actions} from '../ActionTypes/Types'
 import { points } from '../../Points/points'
-export const PlayersReducer = (state = [], action) =>{
+import { defaultState } from '../defaultstate'
+export const LoginReducer = (state = defaultState, action) =>{
     switch(action.type){
-      case actions.ADD_PLAYER:
-        return [
-          ...state,
-          action.player
-        ]
-        case actions.RE_PLAYER:
+      case actions.CH_USR_NM:
+        return {...state, name: action.name}
+        case actions.CH_ID:
+        return {...state, id: action.id}
+        case actions.CH_AUTH:
+            return {...state, auth: action.status}
+      default: return state
+    }
+  }
+
+  /* case actions.RE_PLAYER:
           return state.filter(p=> p.id !== action.id)
         case actions.CH_USR_NM:
           return state.map(p=> p.id === action.id ? {...p, name: action.name} : p)
@@ -20,10 +26,4 @@ export const PlayersReducer = (state = [], action) =>{
         case actions.SET_MOVE:
           return state.map(p=> p.id === action.id ? {...p, move: action.move} : p)
         case actions.SORT_CARDS:
-          return state.map(p=> p.type === action.player ? {...p, cards: p.cards.sort(function(a, b) {return points[a.value] - points[b.value]})} : p)
-
-      default: return state
-    }
-  }
-
-  /*state.map(p=> p.id === action.id ? {...p, name: action.username} : p)*/
+          return state.map(p=> p.type === action.player ? {...p, cards: p.cards.sort(function(a, b) {return points[a.value] - points[b.value]})} : p)*/

@@ -1,0 +1,30 @@
+.buttonwrap{
+    margin: auto;
+    text-align: center;
+}
+.buttons{
+    align-self: center;
+    display: inline-block;
+    width: 100px;
+    background: whitesmoke;
+    border: 1px solid black;
+    color: black; 
+    padding: 1rem 1.5rem; 
+    text-decoration: none; 
+    border-radius: 3px; 
+}
+
+.disabled {
+ align-self: center;
+   display: inline-block;
+    width: 100px;
+    background: whitesmoke;
+    border: 1px solid black;
+    color: black; 
+    padding: 1rem 1.5rem; 
+    text-decoration: none; 
+    border-radius: 3px; 
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.6;
+}

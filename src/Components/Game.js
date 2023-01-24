@@ -1,16 +1,46 @@
-import { useState, useEffect } from "react"
-import Form from './Form'
+import { useState, useEffect} from "react"
 import Table from './Table'
 import styles from './Main.module.css'
 import shortid from "shortid"
 import {firstNames} from "@faykah/first-names-en";
+import CreateRoom from './CreateRoom'
+import ConnectRoom from './ConnectRoom'
+import { Routes, useNavigate, Navigate, generatePath, useSearchParams, useHistory} from "react-router-dom";
 import { useDispatch, useSelector, getState} from "react-redux"
 import {store} from '../Store/store'
 import {points} from '../Points/points'
-import {AddDeck, AddPlayer, ChangeSuit, ChangeStart, GVcardsTo, SetMove, SetActive, TKcardsFROM, SortCards, SetBeaten, NextRound, SetChoice} from '../Store/ActionCreators/actioncreators'
-import { BoardReducer } from "../Store/Reducers/BoardR"
+import {ChangeAuth, ChangeList, ChangeId} from '../Store/ActionCreators/actioncreators'
+import {socket} from '../socket.js'
+import Form from "./Form"
+import axios from 'axios'
+import MaxOfArray from "../MaxOfArray";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+} from 'react-router-dom';
+import current from '../GetStore'
 function Game(){
+  let navigate = useNavigate() 
+  useEffect(() => {
+    if(!current().rooms.length){
+      socket.emit('Get:rooms')
+    }
+    if(!current().user.id){
+      socket.on('connect', ()=>{
+        changer(ChangeId(socket.id))
+      })}
+    if(!current().user.auth && window.location.pathname.startsWith('/Room')){
+      navigate('/')
+    }
+    socket.on('Send', (r)=>{
+      changer(ChangeList(r))
+    })
+  }, [current().rooms.length, current().user.id, current().user.auth, window.location.pathname.startsWith('/Room')])
+
   const dispatch = useDispatch()
+
   const opts = useSelector(state=>state)
 
   function average(cards)
@@ -23,13 +53,142 @@ function Game(){
   }
   return sum/cards.length
 }
+function checksuit(card){
+  if(card.suit === current().suit){
+    return points[card.value] += points['ACE']
+  }
+  else{
+    return points[card.value]
+  }
+}
 
-  function current(){
-    return store.getState()
+  function changer(action){
+    dispatch(action)
   }
 
-  function finish(){
-    /*id+1 throw*/
+  
+    function JoinGame(e, key, action){
+      e.preventDefault()
+      let state = current()
+      if(action === 'connect'){
+        let data = {
+          roomId: key,
+          user: {
+            id: state.user.id,
+            name: state.user.name,
+            type: 'guest'
+          }}
+        socket.emit('Validation', data)
+        socket.on('Auth', (res)=>{
+          changer(ChangeAuth(res.auth))
+          if(current().user.auth){
+            socket.emit('Room:join', data)
+            let path = generatePath("/Room/:id", { id: res.room })
+            navigate(path)
+  
+          }
+          else{
+            socket.removeAllListeners('Auth')
+            alert(res.msg)
+          }
+        })
+      
+      }
+      else{
+        let data = {
+          roomId: key,
+          opts: {
+            size: state.opts.size,
+            count: state.opts.count,
+            type: state.opts.type
+          },
+          user: {
+            id: key,
+            name: state.user.name,
+            type: 'host',
+          }
+        }
+        socket.emit('Validation', data)
+        socket.on('Auth', (res)=>{
+          changer(ChangeAuth(res.auth))
+          if(current().user.auth){
+            socket.emit('Room:create', data)
+            socket.emit('Room:join', data)
+            let path = generatePath("/Room/:id", { id: res.room })
+            navigate(path)
+          }
+          else{
+            socket.removeAllListeners('Auth')
+            alert(res.msg)
+          }
+        })
+        
+      }
+    }
+    socket.on('Room:Joined', (u)=>{
+      console.log(u)
+    })
+    console.log(opts)
+    return <div className={styles.Main}>{!current().auth && <Form JoinGame={JoinGame} changer={changer}/>}
+    <Routes>
+        <Route exact path="/" element={<Navigate to="/CreateGame" replace />}/>
+            <Route path='CreateGame' element={<CreateRoom JoinGame={JoinGame} changer={changer}/>}></Route>
+            <Route path='JoinGame' element={<ConnectRoom JoinGame={JoinGame} changer={changer}/>}></Route>
+            <Route path={`/Room/:id`} element={<Table/>}></Route>
+        </Routes></div>
+}
+export default Game
+
+/*function givecards(id){
+      let pls = Object.assign([], players)
+      let idx = pls.indexOf(pls.find(p => p.move))
+      pls.forEach(p=>{
+        if(pls.indexOf(p) >= idx && p.id !== id){
+          let ostatok = 6-p.cards.length
+          for(let i =0; i<ostatok;i++){
+            if(game.cards.length){
+            p.cards.push(game.cards.shift())}
+          }
+        }
+      })
+      pls.forEach(p=>{
+        if(pls.indexOf(p) < idx && p.id !== id){
+          let ostatok = 6-p.cards.length
+          for(let i =0; i<ostatok;i++){
+            if(game.cards.length){
+            p.cards.push(game.cards.shift())}
+          }
+        }
+      })
+      setplay(pls)
+    }*/
+
+    /*if(opts.players.find(p=>p.type === 'human').name){
+            let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
+            fetch(url).then( res => {
+            return res.json()}).then(res=>{
+              return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
+              r=>{return r.json()}).then(r=>{
+                let arr = [...r.cards.filter(c =>
+                  {switch(opts.size) {
+                  case 24: 
+                  return c.value >= 9 || isNaN(c.value)
+                  case 36:
+                  return c.value >= 6 || isNaN(c.value)
+                  default:
+                    return c.value
+                  }})]
+                  cards(arr, arr.length, AddDeck)
+                  changer(ChangeSuit(current().deck[current().deck.length-1].suit))
+                  createbots(current().count)
+                  changer(ChangeStart(!current().start))
+                  round()
+              })})}*/
+
+
+
+/*function finish(){
+    id+1 throw
   }
   function UpdateChoice(id){
     if(current().players.find(p=>p.id === id).cards.length){
@@ -38,15 +197,6 @@ function Game(){
       else{
         changer(SetChoice('', id))
       }
-  }
-
-  function checksuit(card){
-    if(card.suit === current().suit){
-      return points[card.value] += points['ACE']
-    }
-    else{
-      return points[card.value]
-    }
   }
 
   function attack(id, card){
@@ -163,10 +313,6 @@ function Game(){
         changer(action(cards.shift(), id))
       }
     }
-
-    function changer(action){
-      dispatch(action)
-    }
     function createbots(count){
      for(let i=0; i<count-1; i++){
       addplayer(firstNames[Math.floor(Math.random()*firstNames.length)])
@@ -186,67 +332,5 @@ function Game(){
     }
     function removeplayer(id){
       
-    }
-
-    function start(){
-        if(opts.players.find(p=>p.type === 'human').name){
-            let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
-            fetch(url).then( res => {
-            return res.json()}).then(res=>{
-              return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
-              r=>{return r.json()}).then(r=>{
-                let arr = [...r.cards.filter(c =>
-                  {switch(opts.size) {
-                  case 24: 
-                  return c.value >= 9 || isNaN(c.value)
-                  case 36:
-                  return c.value >= 6 || isNaN(c.value)
-                  default:
-                    return c.value
-                  }})]
-                  cards(arr, arr.length, AddDeck)
-                  changer(ChangeSuit(current().deck[current().deck.length-1].suit))
-                  createbots(current().count)
-                  changer(ChangeStart(!current().start))
-                  round()
-                          
-              })})}
-              
-              else{
-                alert('Имя не может быть пустым!')
-              }
-    }
-    console.log(opts)
-    let funcs = {
-      attack: attack,
-    }
-    return <div className={styles.Main}>{opts.start ? <Table changer={changer} funcs={funcs}/>
-    : <Form start={start} changer={changer}/>}</div>
-}
-
-export default Game
-
-/*function givecards(id){
-      let pls = Object.assign([], players)
-      let idx = pls.indexOf(pls.find(p => p.move))
-      pls.forEach(p=>{
-        if(pls.indexOf(p) >= idx && p.id !== id){
-          let ostatok = 6-p.cards.length
-          for(let i =0; i<ostatok;i++){
-            if(game.cards.length){
-            p.cards.push(game.cards.shift())}
-          }
-        }
-      })
-      pls.forEach(p=>{
-        if(pls.indexOf(p) < idx && p.id !== id){
-          let ostatok = 6-p.cards.length
-          for(let i =0; i<ostatok;i++){
-            if(game.cards.length){
-            p.cards.push(game.cards.shift())}
-          }
-        }
-      })
-      setplay(pls)
     }*/
     

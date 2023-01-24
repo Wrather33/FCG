@@ -6,11 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import {createStore}  from 'redux';
 import { Provider } from 'react-redux';
 import { store } from './Store/store';
+import { BrowserRouter, Route, Navigate, Routes} from 'react-router-dom';
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider
-  store={store}><Game/></Provider>
+  store={store}>
+    <BrowserRouter>
+    <Game/>
+    </BrowserRouter>
+    </Provider>
   
   
 );

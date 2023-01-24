@@ -1,0 +1,103 @@
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useState, useEffect, useRef, useLayoutEffect, componentDidMount} from "react"
+import { Link, NavLink, Route, Routes, useSearchParams, useNavigate, generatePath } from "react-router-dom";
+import button from './Buttons.module.css'
+import connectstyles from './ConnectRoom.module.css'
+import Table from './Table';
+import CreateRoom from './CreateRoom'
+import shortid from 'shortid'
+import {ChangeName, ChangeList} from '../Store/ActionCreators/actioncreators'
+import {socket} from '../socket.js'
+import current from '../GetStore'
+import SearchForm from './SearchForm'
+import { store } from "../Store/store";
+import MaxOfArray from '../MaxOfArray'
+import { useCallback } from 'react'
+function ConnectRoom(props){
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [params, setparams] = useState(false)
+    let opts = useSelector(state => state)
+    let data = Object.entries(opts.rooms)
+    let rooms = [];
+
+    useEffect(()=>{
+        if(MaxOfArray(searchParams.getAll('size'))/6 < MaxOfArray(searchParams.getAll('count'))){
+            let count = searchParams.getAll('count').filter(n=> n <= MaxOfArray(searchParams.getAll('size'))/6)
+            if(!count.length){
+                count.push(2)
+            }
+            let size = searchParams.getAll('size')
+            let tp = searchParams.getAll('tp')
+            let dat = {
+                size: size,
+                count: count,
+                tp: tp
+            }
+            setSearchParams(dat)
+        }
+        if(!params){
+            if(!searchParams.toString()){
+                let dat = {
+                size: [24, 36, 52],
+                count: [2, 3, 4, 5, 6, 7, 8],
+                tp: ['подкидной', 'переводной']}
+                setSearchParams(dat)
+                }
+                else{
+                    let size = searchParams.getAll('size').map(n => parseInt(n)).filter(n => n === 24 || n === 36 || n === 52)
+                    if(!size.length){
+                        size.push(24, 36, 52)
+                    }
+                    let count = searchParams.getAll('count').map(n => parseInt(n)).filter(n => { 
+                        return n >= 2 && n <= Math.floor(MaxOfArray(size)/6)
+                    })
+                    if(!count.length){
+                        for(let i=2; i<=Math.floor(MaxOfArray(size)/6); i++){
+                            count.push(i)
+                        }
+                    }
+                    let type = searchParams.getAll('tp').filter(n => n.toLowerCase() === 'переводной' || n.toLowerCase() === 'подкидной')
+                    if(!type.length){
+                        type.push('переводной', 'подкидной')
+                    }
+                    let dat = {
+                        size: size,
+                        count: count,
+                        tp: type
+                    }
+                    setSearchParams(dat)
+                }
+            setparams(true)  
+        }
+    }, [setSearchParams, searchParams.toString(), searchParams, params, searchParams.getAll('size'), searchParams.getAll('count')])
+
+    if(data.length){
+        for (const [key, value] of data) {
+            let len = Object.keys(value.users).length
+            if((len && len < value.opts.count) && searchParams.getAll('size').includes(`${value.opts.size}`)
+            && searchParams.getAll('count').includes(`${value.opts.count}`)
+            && searchParams.getAll('tp').includes(value.opts.type)){
+            rooms.push(<div key={key}><a className={connectstyles.rooms} 
+                onClick={(e)=>{ props.JoinGame(e, key, 'connect')}}><b>{value.users[key].name} {Object.keys(value.users).length}/{value.opts.count}</b></a></div>)
+        }}
+    }
+    return <div>
+    <div className={connectstyles.ConnectRoom}>
+    <div className={connectstyles.styleopts}><label htmlFor="username">Your name?</label>
+    <input name="username" onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}/></div>
+    <SearchForm changer={props.changer} searchParams={searchParams} setSearchParams={setSearchParams}/>
+    {!rooms.length ?<div key={shortid.generate()} className={connectstyles.warn}><h1>There are no rooms at the moment.<br></br>
+    You can create your own room <NavLink to='/CreateGame'>here.</NavLink></h1></div> :
+    rooms}</div></div>
+}
+export default ConnectRoom
+/*let rooms = JSON.parse(localStorage.getItem('list')).map((r)=>{
+        return <div key={r}><NavLink to={`/Game/${r}`}>{r}</NavLink></div>
+    })*/
+/*<div key={shortid.generate()}><Routes>
+        <Route path={`/Game/:id`} component={<Table start={props.start} changer={props.changer} funcs={props.funcs}/>}></Route>
+        </Routes></div>
+        {!rooms.length ? <div key={shortid.generate()}className={button.warn}><h1>There are no rooms at the moment.<br></br>
+            You can create your own room <NavLink to='/CreateGame'>here.</NavLink></h1>:<div>{rooms}</div>
+            <Routes>
+            <Route path='/CreateGame' element={<CreateRoom id={shortid.generate()} start={props.start} changer={props.changer}/>}></Route></Routes></div></div>*/
