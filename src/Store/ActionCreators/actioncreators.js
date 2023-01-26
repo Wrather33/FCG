@@ -20,6 +20,15 @@ export const ChangeSize = (size) =>(
 export const ChangeType= (tp) =>(
     {type: actions.CH_TYPE, tp}
 )
+export const SetUsers= (u) =>(
+    {type: actions.SET_USERS, u}
+)
+export const NewMessage= (message) =>(
+    {type: actions.NEW_MESSAGE, message}
+)
+export const SetRoom = (room)=>(
+    {type: actions.SET_ROOM, room}
+)
 /*
 export const SearchCount = (count) =>(
     {type: actions.SE_CNT, count}

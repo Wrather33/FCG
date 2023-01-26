@@ -9,7 +9,7 @@ import { Routes, useNavigate, Navigate, generatePath, useSearchParams, useHistor
 import { useDispatch, useSelector, getState} from "react-redux"
 import {store} from '../Store/store'
 import {points} from '../Points/points'
-import {ChangeAuth, ChangeList, ChangeId} from '../Store/ActionCreators/actioncreators'
+import {ChangeAuth, ChangeList, ChangeId, SetUsers, NewMessage, SetRoom} from '../Store/ActionCreators/actioncreators'
 import {socket} from '../socket.js'
 import Form from "./Form"
 import axios from 'axios'
@@ -23,6 +23,7 @@ import {
 import current from '../GetStore'
 function Game(){
   let navigate = useNavigate() 
+ 
   useEffect(() => {
     if(!current().rooms.length){
       socket.emit('Get:rooms')
@@ -37,12 +38,21 @@ function Game(){
     socket.on('Send', (r)=>{
       changer(ChangeList(r))
     })
+    socket.on('Set:Users', (u)=>{
+      changer(SetUsers(u))
+    })
+    socket.on('Set:Room', (res)=>{
+      changer(SetRoom(res))})
+    const messagelistener = function(data){
+      changer(NewMessage(data));
+  };
+    socket.addEventListener('Room:Set_Message', messagelistener);
+    return () => socket.removeEventListener('Room:Set_Message', messagelistener);
   }, [current().rooms.length, current().user.id, current().user.auth, window.location.pathname.startsWith('/Room')])
 
   const dispatch = useDispatch()
 
   const opts = useSelector(state=>state)
-
   function average(cards)
 {
   let sum = 0
@@ -125,20 +135,22 @@ function checksuit(card){
         
       }
     }
-    socket.on('Room:Joined', (u)=>{
-      console.log(u)
-    })
     console.log(opts)
-    return <div className={styles.Main}>{!current().auth && <Form JoinGame={JoinGame} changer={changer}/>}
+    return <div className={styles.Main}>{!current().user.auth && <Form JoinGame={JoinGame} changer={changer}/>}
     <Routes>
         <Route exact path="/" element={<Navigate to="/CreateGame" replace />}/>
             <Route path='CreateGame' element={<CreateRoom JoinGame={JoinGame} changer={changer}/>}></Route>
             <Route path='JoinGame' element={<ConnectRoom JoinGame={JoinGame} changer={changer}/>}></Route>
-            <Route path={`/Room/:id`} element={<Table/>}></Route>
+            <Route path={`/Room/:id`} element={<Table changer={changer}/>}></Route>
         </Routes></div>
 }
 export default Game
 
+ /*socket.on('Joined', (res)=>{
+      changer(SetRoom(res))
+      axios.get(`http://localhost:5000/rooms/${res.roomId}`).then(function (res) {
+      changer(SetUsers(res.data.users))
+    })})*/
 /*function givecards(id){
       let pls = Object.assign([], players)
       let idx = pls.indexOf(pls.find(p => p.move))

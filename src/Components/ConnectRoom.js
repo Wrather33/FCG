@@ -24,7 +24,7 @@ function ConnectRoom(props){
         if(MaxOfArray(searchParams.getAll('size'))/6 < MaxOfArray(searchParams.getAll('count'))){
             let count = searchParams.getAll('count').filter(n=> n <= MaxOfArray(searchParams.getAll('size'))/6)
             if(!count.length){
-                count.push(2)
+                count.push(MaxOfArray(searchParams.getAll('size'))/6)
             }
             let size = searchParams.getAll('size')
             let tp = searchParams.getAll('tp')

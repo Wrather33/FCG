@@ -1,9 +1,12 @@
-import { defaultState } from '../defaultstate'
 import {actions} from '../ActionTypes/Types'
+import { points } from '../../Points/points'
+import { defaultState } from '../defaultstate'
 export const RoomReducer = (state = defaultState, action) =>{
     switch(action.type){
-      case actions.CH_LIST:
-        return action.rooms
-      default: return state
+        case actions.SET_ROOM:
+              return action.room
+        default: return state
     }
-  }
+
+
+}

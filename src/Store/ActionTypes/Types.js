@@ -6,6 +6,9 @@ export const actions={
     CH_CNT: "CH_CNT",
     CH_SIZE: 'CH_SIZE',
     CH_TYPE: 'CH_TYPE',
+    SET_USERS: 'SET_USERS',
+    NEW_MESSAGE: 'NEW_MESSAGE',
+    SET_ROOM: 'SET_ROOM'
     /*SE_SIZE: 'SE_SIZE',
     SE_TYPE: 'SE_TYPE',
     SE_CNT: "SE_CNT",

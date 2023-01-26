@@ -21,21 +21,30 @@ app.use(function (req, res, next) {
       }
     }))
   }
-const server = require('http').Server(app)
+const server = require('http').createServer(app)
 const socket = require('socket.io')
 
 const io = socket(server)
 
 app.use(express.json());
-
+app.use(express.urlencoded({extended: true}))
 const rooms = new Map()
 let url = process.env.PORT || 5000
 
-app.get('/rooms', function(req, res){
-  console.log('hello')
+app.get('/rooms/:id', function(req, res){
+  const roomId = req.params.id
+  const obj = rooms.has(roomId) ? {
+    users: [...rooms.get(roomId).get('users').values()],
+    messages: [...rooms.get(roomId).get('messages').values()] } : {users: [], messages: []}
+  res.json(obj)
 })
 
-/*app.post('/rooms', function(req, res) {
+
+/*axios.get(`http://localhost:5000/rooms/${data.roomId}`).then(function (res) {
+              changer(SetUsers(res.data.users))
+            })
+
+app.post('/rooms', function(req, res) {
  if(!rooms.has(req.body.id)){
   rooms.set(
     req.body.id,
@@ -47,6 +56,7 @@ app.get('/rooms', function(req, res){
  res.send()
 });*/
 /*console.log(io.sockets.adapter.rooms)*/
+
 io.on('connection', socket =>{
   socket.on('Validation', (data)=>{
     if(data.user.type === 'host' && rooms.has(data.roomId)){
@@ -81,14 +91,37 @@ io.on('connection', socket =>{
     rooms.delete(data)
     io.emit('Send', toObject(rooms))
   });
+ 
+  socket.on('Room:New_Message', ({userName, roomId, text})=>{
+    const obj = {
+      userName,
+      text
+    }
+    rooms.get(roomId).get('messages').push(obj)
+    io.to(roomId).emit('Room:Set_Message', obj)
+    io.emit('Send', toObject(rooms))
+    })
   socket.on('Room:join', (data)=>{
     socket.join(data.roomId)
     rooms.get(data.roomId).get('users').set(data.user.id, data.user)
-    socket.to(data.roomId).emit('Room:Joined', `client ${data.user.name} connect to chat`);
+    const users = [...rooms.get(data.roomId).get('users').values()]
+    let room = {
+      roomId: data.roomId,
+      room: toObject(rooms.get(data.roomId))
+    }
+    io.to(data.roomId).emit('Set:Room', room)
+    io.to(data.roomId).emit('Set:Users', users)
     io.emit('Send', toObject(rooms))
     })
+    socket.on('disconnect', ()=>{
+      rooms.forEach((value, roomId)=>{
+        if(value.get('users').delete(socket.id)){
+          const users = [...value.get('users').values()]
+          io.to(roomId).emit('Set:Users', users)
+        }
+      })
+    })
   socket.on('Get:rooms', ()=>{
-  console.log(toObject(rooms))
     io.emit('Send', toObject(rooms))
   })
 })

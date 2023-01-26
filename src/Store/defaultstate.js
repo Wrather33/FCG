@@ -13,6 +13,9 @@ export const defaultState = {
     count: 2,
     type: 'подкидной'
   },
+  users: [],
+  messages: [],
+  room: {}
 }
 
 /*rooms inside server not in state*/

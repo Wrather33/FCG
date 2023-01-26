@@ -9,8 +9,7 @@ import { socket } from '../socket';
 function Form(props){
     
     return (
-        <div className={styles.buttonwrap}>
-            
+        <div className={styles.buttonwrap}>    
             <NavLink to='/CreateGame' className={window.location.pathname.startsWith('/JoinGame') ? styles.buttons : styles.disabled}>
                 Create Game</NavLink><br></br>
             <NavLink to='/JoinGame' className={window.location.pathname.startsWith('/CreateGame') ? styles.buttons : styles.disabled}>Join Game</NavLink>
