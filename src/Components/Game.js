@@ -30,7 +30,7 @@ function Game(){
     }
     if(!current().user.id){
       socket.on('connect', ()=>{
-        changer(ChangeId(socket.id))
+        changer(ChangeId(shortid.generate()))
       })}
     if(!current().user.auth && window.location.pathname.startsWith('/Room')){
       navigate('/')

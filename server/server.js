@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
     }))
   }
 const server = require('http').createServer(app)
-const socket = require('socket.io')
+const socket = require('socket.io');
 
 const io = socket(server)
 
@@ -92,13 +92,13 @@ io.on('connection', socket =>{
     io.emit('Send', toObject(rooms))
   });
  
-  socket.on('Room:New_Message', ({userName, roomId, text})=>{
+  socket.on('Room:New_Message', async ({userName, roomId, text})=>{
     const obj = {
       userName,
       text
     }
     rooms.get(roomId).get('messages').push(obj)
-    io.to(roomId).emit('Room:Set_Message', obj)
+    socket.to(roomId).emit('Room:Set_Message', obj)
     io.emit('Send', toObject(rooms))
     })
   socket.on('Room:join', (data)=>{

@@ -16,7 +16,6 @@ function Chat(props){
             roomId: roomId,
             text: messageValue
         }
-        
         socket.emit('Room:New_Message', msg)
         setMessageValue('')
     }
