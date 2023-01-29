@@ -8,13 +8,14 @@ import {Routes, Route, Link, NavLink} from 'react-router-dom'
 import button from './Buttons.module.css'
 import { socket } from '../socket';
 import Count from './Count'
+import current from '../GetStore';
 
 function CreateRoom(props){
     const opts = useSelector(state => state);
     return <div className={styles.Form}>
         <h1>Fool Card Game</h1>
         <h2>Your name?</h2>
-        <input value={opts.name} onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}></input><br/>
+        <input value={current().user.name} onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}></input><br/>
         <h2>Deck size?</h2>
         <input type='radio' name='decksize' value={24} onChange={(e)=>props.changer(ChangeSize(e.target.value))}></input>24
         <input type='radio' name='decksize' defaultChecked value={36} onChange={(e)=>props.changer(ChangeSize(e.target.value))}></input>36

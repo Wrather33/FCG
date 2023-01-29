@@ -91,8 +91,8 @@ io.on('connection', socket =>{
     if(rooms.get(data).get('users').get(socket.id).type === 'host'){
       if(rooms.delete(data)){
         io.to(data).emit('Leaving', true)
-        io.emit('Send', toObject(rooms))
         io.socketsLeave(data);
+        io.emit('Send', toObject(rooms))
       }
     }
     else{

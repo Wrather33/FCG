@@ -45,7 +45,6 @@ function Game(){
     })
     socket.on('Leaving', (res)=>{
       if(res){
-        socket.removeAllListeners('Leaving')
         alert('Room has been deleted')
       }
       changer(SetRoom({
@@ -114,9 +113,9 @@ function checksuit(card){
   
           }
           else{
-            socket.removeAllListeners('Auth')
             alert(res.msg)
           }
+          socket.removeAllListeners('Auth')
         })
       
       }
@@ -144,9 +143,9 @@ function checksuit(card){
             navigate(path)
           }
           else{
-            socket.removeAllListeners('Auth')
             alert(res.msg)
           }
+          socket.removeAllListeners('Auth')
         })
         
       }
