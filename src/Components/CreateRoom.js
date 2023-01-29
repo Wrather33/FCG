@@ -24,7 +24,7 @@ function CreateRoom(props){
         <h2>Type of game?</h2>
         <input type='radio' name='typegame' defaultChecked value={'подкидной'} onChange={(e)=>props.changer(ChangeType(e.target.value))}></input>Подкидной
         <input type='radio' name='typegame' value={'переводной'} onChange={(e)=>props.changer(ChangeType(e.target.value))}></input>Переводной<br></br>
-        <a className={button.buttons} onClick={(e)=>{ props.JoinGame(e, opts.user.id, 'create')}}>Start Game!</a>
+        <a className={button.buttons} onClick={(e)=>{ props.JoinGame(e, shortid.generate(), 'create')}}>Start Game!</a>
         </div>
 }
 export default CreateRoom

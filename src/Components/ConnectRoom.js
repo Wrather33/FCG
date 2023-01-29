@@ -78,7 +78,8 @@ function ConnectRoom(props){
             && searchParams.getAll('count').includes(`${value.opts.count}`)
             && searchParams.getAll('tp').includes(value.opts.type)){
             rooms.push(<div key={key}><a className={connectstyles.rooms} 
-                onClick={(e)=>{ props.JoinGame(e, key, 'connect')}}><b>{value.users[key].name} {Object.keys(value.users).length}/{value.opts.count}</b></a></div>)
+                onClick={(e)=>{ props.JoinGame(e, key, 'connect')}}><b>{Object.values(value.users).find(u=>u.type === 'host').name} {Object.keys(value.users).length}/{value.opts.count}</b>
+                </a></div>)
         }}
     }
     return <div>

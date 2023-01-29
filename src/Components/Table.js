@@ -6,6 +6,7 @@ import Player from './Player'
 import Others from './Others'
 import Board from './Board'
 import { useParams, useNavigate, useLocation} from 'react-router'
+import { ChangeAuth } from '../Store/ActionCreators/actioncreators'
 import {socket} from '../socket.js'
 import current from '../GetStore'
 import Chat from './Chat'
@@ -15,10 +16,10 @@ function Table(props){
     let navigate = useNavigate()
     let {id} = useParams()
     function goBack(){
-        socket.emit('Room:delete', id)
-        navigate(-1)
+        socket.emit('Room:Leave', id)
     }
     return <div>
+        <button onClick={()=>{goBack()}}>exit</button>
         <button onClick={()=>{setShow(!show)}}>{show ? 'close' : 'show'}</button>
         {show && <Chat changer={props.changer}/>}</div>
 }

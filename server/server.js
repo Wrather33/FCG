@@ -87,10 +87,24 @@ io.on('connection', socket =>{
       io.emit('Send', toObject(rooms))
   })
 
-  socket.on('Room:delete', (data)=>{
-    rooms.delete(data)
+  socket.on('Room:Leave', (data)=>{
+    if(rooms.get(data).get('users').get(socket.id).type === 'host'){
+      if(rooms.delete(data)){
+        io.to(data).emit('Leaving', true)
+        io.emit('Send', toObject(rooms))
+        io.socketsLeave(data);
+      }
+    }
+    else{
+    if(rooms.get(data).get('users').delete(socket.id)){
+    socket.leave(data);
+    const users = [...rooms.get(data).get('users').values()]
+    socket.to(data).emit('Set:Users', users)
+    socket.emit('Leaving', true)
     io.emit('Send', toObject(rooms))
-  });
+  }}
+}
+  )
  
   socket.on('Room:New_Message', async ({userName, roomId, text, time})=>{
     const obj = {
@@ -116,7 +130,7 @@ io.on('connection', socket =>{
       rooms.forEach((value, roomId)=>{
         if(value.get('users').delete(socket.id)){
           const users = [...value.get('users').values()]
-          io.to(roomId).emit('Set:Users', users)
+          socket.to(roomId).emit('Set:Users', users)
         }
       })
     })

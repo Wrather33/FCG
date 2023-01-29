@@ -29,7 +29,7 @@ function Game(){
     }
     if(!current().user.id){
       socket.on('connect', ()=>{
-        changer(ChangeId(shortid.generate()))
+        changer(ChangeId(socket.id))
       })}
     if(!current().user.auth && window.location.pathname.startsWith('/Room')){
       navigate('/')
@@ -42,6 +42,15 @@ function Game(){
     })
     socket.on('Set:Room', (res)=>{
       changer(SetRoom(res))
+    })
+    socket.on('Leaving', (res)=>{
+      changer(SetRoom({
+        users: [],
+        messages: [],
+        opts: {}
+      }))
+      changer(ChangeAuth(false))
+      navigate(-1)
     })
     const messagelistener = function(data){
       changer(NewMessage(data));
@@ -113,7 +122,7 @@ function checksuit(card){
             type: state.opts.type
           },
           user: {
-            id: key,
+            id: state.user.id,
             name: state.user.name,
             type: 'host',
           }
