@@ -9,14 +9,18 @@ import { useParams, useNavigate, useLocation} from 'react-router'
 import {socket} from '../socket.js'
 import current from '../GetStore'
 import Chat from './Chat'
+import { useState } from 'react'
 function Table(props){
+    const [show, setShow] = useState(true)
     let navigate = useNavigate()
     let {id} = useParams()
     function goBack(){
         socket.emit('Room:delete', id)
         navigate(-1)
     }
-    return <div><Chat changer={props.changer}/></div>
+    return <div>
+        <button onClick={()=>{setShow(!show)}}>{show ? 'close' : 'show'}</button>
+        {show && <Chat changer={props.changer}/>}</div>
 }
 /*let deck = useSelector(state => state.deck)
 <button onClick={()=>{goBack()}}>Exit</button>
