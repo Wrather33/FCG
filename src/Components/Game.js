@@ -44,6 +44,10 @@ function Game(){
       changer(SetRoom(res))
     })
     socket.on('Leaving', (res)=>{
+      if(res){
+        socket.removeAllListeners('Leaving')
+        alert('Room has been deleted')
+      }
       changer(SetRoom({
         users: [],
         messages: [],
@@ -56,8 +60,11 @@ function Game(){
       changer(NewMessage(data));
   };
     socket.addEventListener('Room:Set_Message', messagelistener);
-    return () => socket.removeEventListener('Room:Set_Message', messagelistener);
-  }, [current().rooms.length, current().user.id, current().user.auth, window.location.pathname.startsWith('/Room')])
+    return () => {
+      socket.removeEventListener('Room:Set_Message', messagelistener);
+      socket.off('Leaving')
+    }
+  }, [current().rooms.length, current().user.id, current().user.auth, window.location.pathname.startsWith('/Room'), socket])
 
   const dispatch = useDispatch()
 

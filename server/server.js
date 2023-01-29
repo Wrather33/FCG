@@ -100,7 +100,7 @@ io.on('connection', socket =>{
     socket.leave(data);
     const users = [...rooms.get(data).get('users').values()]
     socket.to(data).emit('Set:Users', users)
-    socket.emit('Leaving', true)
+    socket.emit('Leaving', false)
     io.emit('Send', toObject(rooms))
   }}
 }
