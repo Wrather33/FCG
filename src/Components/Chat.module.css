@@ -22,28 +22,55 @@
 .Users p{
     font-weight: bold;
 }
+.Users ul{
+list-style-type: none;
+}
 .Users li{
     background-color: whitesmoke;
     border: 1px solid black;
     border-radius: 5px;
 }
 .Messages{
+    display: block;
+    text-align: start;
     width: 100%;
     height: 80%;
     background-color: whitesmoke;
     border: 2px solid black;
     border-radius: 5px;
+    overflow-y: auto;
 }
 .Messages .message{
-    color: white;
+    display: block;
+    padding: 5px;
+    max-width: 10em;
+    color: black;
+    border-radius: 10px;
+    margin-bottom: 1em; 
+    background-color: peru; 
+    word-wrap: break-word;
+    clear: both;
+}
+.time{
+    float: right;
+    font-size: 80%;
+}
+.mymsg{
+    float: right;
+}
+.opmsg{
     float: left;
-    background-color: black;
-    
+}
+.Messages .message p{
+    margin: 0;
+}
+.Messages .message span{
+    font-weight: bold;
 }
 .ChatWrap{
     width: 20em;
-    height: 28em;
-    text-align: center;
+    height: 28em; 
+    text-align: center
 }
 .ChatWrap textarea{
     width: 90%;

@@ -92,10 +92,11 @@ io.on('connection', socket =>{
     io.emit('Send', toObject(rooms))
   });
  
-  socket.on('Room:New_Message', async ({userName, roomId, text})=>{
+  socket.on('Room:New_Message', async ({userName, roomId, text, time})=>{
     const obj = {
       userName,
-      text
+      text,
+      time
     }
     rooms.get(roomId).get('messages').push(obj)
     socket.to(roomId).emit('Room:Set_Message', obj)
@@ -105,12 +106,10 @@ io.on('connection', socket =>{
     socket.join(data.roomId)
     rooms.get(data.roomId).get('users').set(data.user.id, data.user)
     const users = [...rooms.get(data.roomId).get('users').values()]
-    let room = {
-      roomId: data.roomId,
-      room: toObject(rooms.get(data.roomId))
-    }
-    io.to(data.roomId).emit('Set:Room', room)
-    io.to(data.roomId).emit('Set:Users', users)
+    let room = toObject(rooms.get(data.roomId))
+    room.roomId = data.roomId
+    socket.emit('Set:Room', room)
+    socket.to(data.roomId).emit('Set:Users', users)
     io.emit('Send', toObject(rooms))
     })
     socket.on('disconnect', ()=>{

@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react"
+import { useState, useEffect, useRef} from "react"
 import Table from './Table'
 import styles from './Main.module.css'
 import shortid from "shortid"
@@ -23,7 +23,6 @@ import {
 import current from '../GetStore'
 function Game(){
   let navigate = useNavigate() 
- 
   useEffect(() => {
     if(!current().rooms.length){
       socket.emit('Get:rooms')
@@ -42,7 +41,8 @@ function Game(){
       changer(SetUsers(u))
     })
     socket.on('Set:Room', (res)=>{
-      changer(SetRoom(res))})
+      changer(SetRoom(res))
+    })
     const messagelistener = function(data){
       changer(NewMessage(data));
   };
@@ -141,7 +141,7 @@ function checksuit(card){
         <Route exact path="/" element={<Navigate to="/CreateGame" replace />}/>
             <Route path='CreateGame' element={<CreateRoom JoinGame={JoinGame} changer={changer}/>}></Route>
             <Route path='JoinGame' element={<ConnectRoom JoinGame={JoinGame} changer={changer}/>}></Route>
-            <Route path={`/Room/:id`} element={<Table changer={changer}/>}></Route>
+            <Route path={`/Room/:id`} element={<Table changer={changer} />}></Route>
         </Routes></div>
 }
 export default Game
