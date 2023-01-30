@@ -82,7 +82,10 @@ io.on('connection', socket =>{
             size: data.opts.size,
             count: data.opts.count,
             type: data.opts.type
-          }]
+          }],
+          ['cards', data.cards],
+          ['bin', []],
+          ['table', []]
         ]))
       io.emit('Send', toObject(rooms))
   })

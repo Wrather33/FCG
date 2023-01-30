@@ -101,7 +101,8 @@ function checksuit(card){
           user: {
             id: state.user.id,
             name: state.user.name,
-            type: 'guest'
+            type: 'guest',
+            cards: []
           }}
         socket.emit('Validation', data)
         socket.on('Auth', (res)=>{
@@ -120,6 +121,20 @@ function checksuit(card){
       
       }
       else{
+        let url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`
+        fetch(url).then( res => {
+        return res.json()}).then(res=>{
+          return fetch(`https://deckofcardsapi.com/api/deck/${res.deck_id}/draw/?count=${res.remaining}`).then(
+          r=>{return r.json()}).then(r=>{
+            let arr = [...r.cards.filter(c =>
+              {switch(current().opts.size) {
+              case 24: 
+              return c.value >= 9 || isNaN(c.value)
+              case 36:
+              return c.value >= 6 || isNaN(c.value)
+              default:
+                return c.value
+              }})]
         let data = {
           roomId: key,
           opts: {
@@ -131,7 +146,9 @@ function checksuit(card){
             id: state.user.id,
             name: state.user.name,
             type: 'host',
-          }
+            cards: []
+          },
+          cards: arr
         }
         socket.emit('Validation', data)
         socket.on('Auth', (res)=>{
@@ -146,7 +163,7 @@ function checksuit(card){
             alert(res.msg)
           }
           socket.removeAllListeners('Auth')
-        })
+        })})})
         
       }
     }

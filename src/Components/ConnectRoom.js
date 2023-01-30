@@ -16,6 +16,7 @@ import { useCallback } from 'react'
 function ConnectRoom(props){
     const [searchParams, setSearchParams] = useSearchParams()
     const [params, setparams] = useState(false)
+    let username = current().user.name
     let opts = useSelector(state => state)
     let data = Object.entries(opts.rooms)
     let rooms = [];
@@ -85,10 +86,10 @@ function ConnectRoom(props){
     return <div>
     <div className={connectstyles.ConnectRoom}>
     <div className={connectstyles.styleopts}><label htmlFor="username">Your name?</label>
-    <input name="username" onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}/></div>
+    <input name="username" value={username} onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}/></div>
     <SearchForm changer={props.changer} searchParams={searchParams} setSearchParams={setSearchParams}/>
-    {!rooms.length ?<div key={shortid.generate()} className={connectstyles.warn}><h1>There are no rooms at the moment.<br></br>
-    You can create your own room <NavLink to='/CreateGame'>here.</NavLink></h1></div> :
+    {!rooms.length ?<div key={shortid.generate()} className={connectstyles.warn}><p>There are no rooms at the moment.<br></br>
+    You can create your own room <NavLink to='/CreateGame'>here.</NavLink></p></div> :
     rooms}</div></div>
 }
 export default ConnectRoom

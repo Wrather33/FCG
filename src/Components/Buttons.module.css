@@ -5,7 +5,7 @@
 .buttons{
     align-self: center;
     display: inline-block;
-    width: 100px;
+    width: 8em;
     background: whitesmoke;
     border: 1px solid black;
     color: black; 
@@ -17,7 +17,7 @@
 .disabled {
  align-self: center;
    display: inline-block;
-    width: 100px;
+    width: 8em;
     background: whitesmoke;
     border: 1px solid black;
     color: black; 
