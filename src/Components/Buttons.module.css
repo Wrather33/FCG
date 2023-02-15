@@ -5,26 +5,26 @@
 .buttons{
     align-self: center;
     display: inline-block;
-    width: 8em;
+    width: 15vw;
     background: whitesmoke;
     border: 1px solid black;
     color: black; 
-    padding: 1rem 1.5rem; 
     text-decoration: none; 
     border-radius: 3px; 
+    font-size: 2vw;
 }
 
 .disabled {
  align-self: center;
    display: inline-block;
-    width: 8em;
+    width: 15vw;
     background: whitesmoke;
     border: 1px solid black;
     color: black; 
-    padding: 1rem 1.5rem; 
     text-decoration: none; 
     border-radius: 3px; 
   pointer-events: none;
   cursor: default;
   opacity: 0.6;
+  font-size: 2vw;
 }

@@ -32,22 +32,19 @@ function SearchForm(props){
     }
       return (
         <div>
-            <div className={connectstyles.styleopts}>
-              <label htmlFor="decksize">
+              <p>
               Deck size?
-              </label>
+              </p>
               <input type='checkbox' name='decksize' checked={props.searchParams.getAll('size').includes('24')} value={24} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>24
               <input type='checkbox' name='decksize' checked={props.searchParams.getAll('size').includes('36')} value={36} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>36
-              <input type='checkbox' name='decksize' checked={props.searchParams.getAll('size').includes('52')} value={52} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>52</div>
-              <div className={connectstyles.styleopts}>
-              <label htmlFor="count">Count of Players?</label>
+              <input type='checkbox' name='decksize' checked={props.searchParams.getAll('size').includes('52')} value={52} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>52
+              <p>Count of Players?</p>
               <SeCount count={Math.floor(MaxOfArray(props.searchParams.getAll('size'))/6)} changer={props.changer} cnt={props.searchParams.getAll('count')} handleSubmit={handleSubmit}/><br></br>
-              </div>
-              <div className={connectstyles.styleopts}><label htmlFor="gametype">
+              <p>
               Type of game?
-              </label>
+              </p>
               <input type="checkbox" name="gametype" checked={props.searchParams.getAll('tp').includes('подкидной')} value='подкидной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Подкидной
-              <input type="checkbox" name="gametype" checked={props.searchParams.getAll('tp').includes('переводной')} value='переводной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Переводной</div>
+              <input type="checkbox" name="gametype" checked={props.searchParams.getAll('tp').includes('переводной')} value='переводной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Переводной
         </div>
       );
       //props.changer(SearchSize(e.target.value))//

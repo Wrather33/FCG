@@ -1,52 +1,36 @@
 .ConnectRoom{
-    width: 30em;
+    width: 50vw;
     margin: auto;
     text-align: center;
     background-color: bisque;
     border: 5px solid black;
-    border-radius: 20px;
-    padding: 2vh;
+    border-radius: 5%;
+    padding: 1vh;
+    font-size: 2vw;
     
 }
-
-.styleopts input{
-    margin: 1vh;
-    font-size: 110%;
-    border: 1px solid black;
-    border-radius: 20px;
+.ConnectRoom * {
+    font-size: 1em;
+    max-height: 1em;
+    max-width: 100%;
 }
-.styleopts input:focus{
-    outline: none;
-}
-.styleopts label{
-    display: block;
-    margin: auto;
-    width: fit-content;
+.ConnectRoom p{
     font-weight: bold;
-    color: whitesmoke;
-    background-color: rgb(91, 102, 74);
-    border: 4px solid black;
-    border-radius: 20px;
 }
 .warn{
-    width: 30em;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: auto;
-    margin-right: auto;
+    display: table;
+    margin: auto;
     text-align: center;
-}
-.warn p{
     font-weight: bold;
     background-color: whitesmoke;
     border: 3px solid black;
 }
+
 .rooms{
     display: inline-block;
     background: rgb(91, 102, 74);
-    border: 4px solid black;
-    color: whitesmoke; 
-    padding: 1rem 1.5rem; 
+    border: 2px solid black;
+    color: whitesmoke;  
     text-decoration: none; 
     border-radius: 10px; 
 }

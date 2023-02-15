@@ -8,18 +8,18 @@ function Count(props){
     for(let i=2; i<=props.count; i++){
         if(i == props.cnt){
             arr.push(
-                <div key={shortid.generate()}>
+                <div key={shortid.generate()}style={{display: 'inline'}}>
                 <input type='radio' name='count' defaultChecked value={i} onChange={(e)=>
                     props.changer(props.ChangeCount(e.target.value))}></input>
                 <label>{i}</label></div>)
         }
         else{
         arr.push(
-            <div key={shortid.generate()}>
+            <div key={shortid.generate()} style={{display: 'inline'}} >
             <input type='radio' name='count' value={i} onChange={(e)=>{
                    props.changer(props.ChangeCount(e.target.value))}}></input>
             <label>{i}</label></div>)}
         }
-    return <div className={styles.counts}>{arr}</div>
+    return arr
 }
 export default Count

@@ -13,6 +13,7 @@ import SearchForm from './SearchForm'
 import { store } from "../Store/store";
 import MaxOfArray from '../MaxOfArray'
 import { useCallback } from 'react'
+import SeCount from './SeCount'
 function ConnectRoom(props){
     const [searchParams, setSearchParams] = useSearchParams()
     const [params, setparams] = useState(false)
@@ -20,7 +21,27 @@ function ConnectRoom(props){
     let opts = useSelector(state => state)
     let data = Object.entries(opts.rooms)
     let rooms = [];
-
+    function myentries(params){
+        const obj = {}
+        for (const key of params.keys()) {
+            obj[key] = params.getAll(key)
+        }
+        return obj
+      }
+    function handleSubmit(value, action){
+        let params = Object.assign({}, myentries(searchParams))
+        if(params[action].includes(value)){
+          if(params[action].length-1){
+          let result = params[action].filter(n => n !== value)
+          params[action] = result
+          setSearchParams(params)
+          }
+        }
+        else{
+          params[action].push(value)
+          setSearchParams(params)
+        }
+      }
     useEffect(()=>{
         if(MaxOfArray(searchParams.getAll('size'))/6 < MaxOfArray(searchParams.getAll('count'))){
             let count = searchParams.getAll('count').filter(n=> n <= MaxOfArray(searchParams.getAll('size'))/6)
@@ -85,11 +106,20 @@ function ConnectRoom(props){
     }
     return <div>
     <div className={connectstyles.ConnectRoom}>
-    <div className={connectstyles.styleopts}><label htmlFor="username">Your name?</label>
-    <input name="username" value={username} onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}/></div>
-    <SearchForm changer={props.changer} searchParams={searchParams} setSearchParams={setSearchParams}/>
-    {!rooms.length ?<div key={shortid.generate()} className={connectstyles.warn}><p>There are no rooms at the moment.<br></br>
-    You can create your own room <NavLink to='/CreateGame'>here.</NavLink></p></div> :
+    <p>Your name?</p>
+    <input name="username" value={username} onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}/>
+    <p>Deck size?</p>
+              <input type='checkbox' name='decksize' checked={searchParams.getAll('size').includes('24')} value={24} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>24
+              <input type='checkbox' name='decksize' checked={searchParams.getAll('size').includes('36')} value={36} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>36
+              <input type='checkbox' name='decksize' checked={searchParams.getAll('size').includes('52')} value={52} onChange={(e)=>{handleSubmit(e.target.value, 'size')}}></input>52
+              <p>Count of Players?</p>
+              <SeCount count={Math.floor(MaxOfArray(searchParams.getAll('size'))/6)} changer={props.changer} cnt={searchParams.getAll('count')} handleSubmit={handleSubmit}/><br></br>
+              <p>
+              Type of game?
+              </p>
+              <input type="checkbox" name="gametype" checked={searchParams.getAll('tp').includes('подкидной')} value='подкидной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Подкидной
+              <input type="checkbox" name="gametype" checked={searchParams.getAll('tp').includes('переводной')} value='переводной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Переводной
+    {!rooms.length ? <p className={connectstyles.warn}>Rooms not found. Create your own room <NavLink to='/CreateGame'>here.</NavLink></p> :
     rooms}</div></div>
 }
 export default ConnectRoom
