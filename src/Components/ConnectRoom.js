@@ -99,9 +99,9 @@ function ConnectRoom(props){
             if((len && len < value.opts.count) && searchParams.getAll('size').includes(`${value.opts.size}`)
             && searchParams.getAll('count').includes(`${value.opts.count}`)
             && searchParams.getAll('tp').includes(value.opts.type)){
-            rooms.push(<div key={key}><a className={connectstyles.rooms} 
-                onClick={(e)=>{ props.JoinGame(e, key, 'connect')}}><b>{Object.values(value.users).find(u=>u.type === 'host').name} {Object.keys(value.users).length}/{value.opts.count}</b>
-                </a></div>)
+            rooms.push(<li key={key} 
+                onClick={(e)=>{ props.JoinGame(e, key, 'connect')}}>{Object.values(value.users).find(u=>u.type === 'host').name} {Object.keys(value.users).length}/{value.opts.count}
+                </li>)
         }}
     }
     return <div>
@@ -120,7 +120,7 @@ function ConnectRoom(props){
               <input type="checkbox" name="gametype" checked={searchParams.getAll('tp').includes('подкидной')} value='подкидной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Подкидной
               <input type="checkbox" name="gametype" checked={searchParams.getAll('tp').includes('переводной')} value='переводной' onChange={(e)=>{handleSubmit(e.target.value, 'tp')}}></input>Переводной
     {!rooms.length ? <p className={connectstyles.warn}>Rooms not found. Create your own room <NavLink to='/CreateGame'>here.</NavLink></p> :
-    rooms}</div></div>
+    <ul className={connectstyles.rooms}>{rooms}</ul>}</div></div>
 }
 export default ConnectRoom
 /*let rooms = JSON.parse(localStorage.getItem('list')).map((r)=>{

@@ -13,13 +13,8 @@ import current from '../GetStore';
 
 function CreateRoom(props){
     const opts = useSelector(state => state);
-    const elementRef = useRef(null);
-   useEffect(()=> 
- 
-   console.log(window.getComputedStyle(elementRef.current, null)
-   .getPropertyValue("font-size"))
-   , [elementRef.current])
-    return <div className={styles.Form} ref={elementRef}>
+   
+    return <div className={styles.Form}>
         <p>Your name?</p>
         <input type='text' value={current().user.name} onChange={(e)=>{ props.changer(ChangeName(e.target.value))}}></input>
         <p>Deck size?</p>

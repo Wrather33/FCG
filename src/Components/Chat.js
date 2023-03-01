@@ -13,8 +13,9 @@ function Chat(props){
     let userName = current().user.name
     let messages = current().room.messages
     const divRef = useRef();
+
     useEffect(()=>{
-        if (divRef.current) {
+        if(divRef.current){
         divRef.current.scrollTo(0, divRef.current.scrollHeight)
         }
     }, [messages])
@@ -39,19 +40,20 @@ function Chat(props){
     }
     messages = messages.map(m=>{
         return <div key={shortid.generate()} className={`${styles.message} ${userName === m.userName ? styles.mymsg : styles.opmsg}`}>
-           <span>{m.userName}</span>
+           <span>{m.userName} :</span>
            <p>{m.text}</p>
            <span className={styles.time}>{m.time}</span>
         </div>
 
     })
     return <div className={styles.Chat}>
-        <div className={styles.Users}><p>Online: {`${users.length}`}</p><ul>{list}</ul></div>
+        <div className={styles.Users}><p>Online: {users.length}</p><ul>{list}</ul></div>
         <div className={styles.ChatWrap}><div ref={divRef} className={styles.Messages}>
         {messages}
         </div>
+        <div className={styles.sender}>
         <textarea value={messageValue} onChange={(e)=>{setMessageValue(e.target.value)}}></textarea>
-        <button onClick={()=>SendMessage()}>Отправить</button>
+        <button onClick={()=>SendMessage()}>&#9993;</button></div>
         </div>
         </div>
 }
